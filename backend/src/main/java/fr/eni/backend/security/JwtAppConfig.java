@@ -23,7 +23,7 @@ public class JwtAppConfig {
     @Bean
     UserDetailsService userDetailsService(){
         return username -> {
-            Utilisateur utilisateur = utilisateurRepository.findUtilisateurByEmailEni(username);
+            Utilisateur utilisateur = utilisateurRepository.findUtilisateurByEmail(username);
             if(utilisateur == null) {
                 throw new UsernameNotFoundException("Utilisateur non trouvé");
             }
