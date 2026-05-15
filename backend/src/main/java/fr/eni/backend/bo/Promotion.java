@@ -1,19 +1,42 @@
 package fr.eni.backend.bo;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+
+@Entity
+@Table(name = "PROMOTION")
 public class Promotion {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(name="REFERENCE")
     private String numero;
+
+    @Column(name = "START_DATE", nullable = false)
     private LocalDate dateDebut;
+
+    @Column(name = "END_DATE", nullable = false)
     private LocalDate dateFin;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PROMOTION_ID")
+    private @Builder.Default List<CoursPlanifie> coursPlanifies = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "PROMOTION_STUDENT",
+    joinColumns = {@JoinColumn(name = "PROMOTION_ID")},
+    inverseJoinColumns = {@JoinColumn(name = "STUDENT_ID")})
+    @ToString.Exclude
+    private @Builder.Default List<Eleve> eleves = new ArrayList<>();
 }

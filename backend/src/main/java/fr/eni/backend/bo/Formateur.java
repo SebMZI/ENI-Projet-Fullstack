@@ -1,6 +1,9 @@
 package fr.eni.backend.bo;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -11,6 +14,10 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @SuperBuilder
+
+@Entity
+@Table(name = "TRAINER")
+//@DiscriminatorValue(value = "F")
 public class Formateur extends Utilisateur{
 
     @Column(name = "TEACHER_STATUS", length = 100)

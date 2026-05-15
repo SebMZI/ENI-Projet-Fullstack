@@ -1,13 +1,8 @@
 package fr.eni.backend.bo;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,8 +10,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serial;
 import java.time.LocalDate;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
+
+import java.util.Collection;
 
 @Data
 @NoArgsConstructor
@@ -24,12 +21,18 @@ import java.util.List;
 @SuperBuilder
 
 @Entity
-@Table(name = "USERS")
+@Inheritance(strategy = InheritanceType.JOINED)
+//@DiscriminatorColumn(name = "DISCR")
+//@DiscriminatorValue(value = "U")
+@Table(name = "USERS") // USER est un mot utilisé par SQL
 public class Utilisateur implements UserDetails {
     @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
     @Column(name = "USER_REGISTRATION", nullable = false, unique = true)
     private String immatriculation;
 
@@ -43,7 +46,7 @@ public class Utilisateur implements UserDetails {
     private String motDePasse;
 
     @Column(name = "USER_EMAIL", nullable = false, length = 150)
-    private String emailEni;
+    private String email;
 
     @Column(name = "USER_PHONE", nullable = false, length = 150)
     private String telephone;
@@ -61,7 +64,7 @@ public class Utilisateur implements UserDetails {
 
     @Override
     public String getUsername() {
-        return emailEni;
+        return email;
     }
 
     @Override
@@ -88,4 +91,13 @@ public class Utilisateur implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(authority));
     }
+
+    @OneToOne(orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "ADDRESS_ID")
+    private Adresse adresse;
+
+    @EqualsAndHashCode.Exclude
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "USER_REGISTRATION")
+    private @Builder.Default List<Role> roles = new ArrayList<>();
 }
