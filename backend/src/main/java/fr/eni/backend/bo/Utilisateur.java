@@ -6,13 +6,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serial;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
@@ -20,11 +21,13 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 
 @Entity
-@Table(name = "USER")
+@Table(name = "USERS")
 public class Utilisateur implements UserDetails {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "USER_REGISTRATION", nullable = false, unique = true)
@@ -42,7 +45,7 @@ public class Utilisateur implements UserDetails {
     @Column(name = "USER_EMAIL", nullable = false, length = 150)
     private String emailEni;
 
-    @Column(name = "USER_EMAIL", nullable = false, length = 150)
+    @Column(name = "USER_PHONE", nullable = false, length = 150)
     private String telephone;
 
     @Column(name = "CREATION_DATE")
@@ -85,6 +88,4 @@ public class Utilisateur implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(authority));
     }
-
-
 }
