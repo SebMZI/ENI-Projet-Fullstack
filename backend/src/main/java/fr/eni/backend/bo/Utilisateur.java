@@ -1,4 +1,5 @@
-package fr.eni.projetformateurs.bo;
+package fr.eni.backend.bo;
+
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,9 +9,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
-
+import java.util.Collection;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -19,7 +24,7 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "USER")
-public class Utilisateur {
+public class Utilisateur implements UserDetails {
 
     @Id
     @Column(name = "USER_REGISTRATION", nullable = false, unique = true)
@@ -42,4 +47,44 @@ public class Utilisateur {
 
     @Column(name = "CREATION_DATE")
     private LocalDate dateCreation;
+
+    // TODO A modifier quand les relations seront faites
+    private String authority;
+
+    @Override
+    public String getPassword() {
+        return motDePasse;
+    }
+
+    @Override
+    public String getUsername() {
+        return emailEni;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(authority));
+    }
+
+
 }
