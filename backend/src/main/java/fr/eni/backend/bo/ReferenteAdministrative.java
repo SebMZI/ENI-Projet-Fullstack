@@ -16,7 +16,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 
 @Entity
-@Table(name = "")
+@Table(name = "OFFICER")
 //@DiscriminatorValue(value = "R")
 public class ReferenteAdministrative extends Utilisateur{
 
