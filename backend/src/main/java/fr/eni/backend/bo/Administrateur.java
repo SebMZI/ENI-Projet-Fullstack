@@ -13,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 
 @Entity
-@Table(name = "USER")
+@Table(name = "ADMINISTRATOR")
 //@DiscriminatorValue(value = "A")
 public class Administrateur extends Utilisateur {
 
