@@ -1,6 +1,6 @@
-package fr.eni.projetformateurs.bo;
+package fr.eni.backend.bo;
 
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -11,7 +11,11 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @SuperBuilder
-public class Administrateur extends Utilisateur{
+
+@Entity
+@Table(name = "USER")
+@DiscriminatorValue(value = "A")
+public class Administrateur extends Utilisateur {
 
     @Column(name = "ADMINISTRATOR_SERVICE", length = 100)
     private String service;
