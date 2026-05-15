@@ -1,4 +1,4 @@
-package fr.eni.projetformateurs.bo;
+package fr.eni.backend.bo;
 
 import jakarta.persistence.Column;
 import lombok.*;

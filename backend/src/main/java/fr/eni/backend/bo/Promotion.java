@@ -1,4 +1,4 @@
-package fr.eni.projetformateurs.bo;
+package fr.eni.backend.bo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
