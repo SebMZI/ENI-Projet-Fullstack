@@ -1,7 +1,9 @@
 package fr.eni.backend.service;
 
 import fr.eni.backend.bo.Filiere;
-import fr.eni.backend.repository.FiliereRepository;
+import fr.eni.backend.dao.FiliereRepository;
+import fr.eni.backend.dto.FiliereDTO;
+import fr.eni.backend.dto.FiliereRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -12,25 +14,40 @@ public class FiliereService {
 
     private final FiliereRepository filiereRepository;
 
-    public List<Filiere> findAll() {
-        return filiereRepository.findAll();
+    // BO → DTO
+    private FiliereDTO toDTO(Filiere filiere) {
+        return FiliereDTO.builder()
+                .id(filiere.getId())
+                .nom(filiere.getNom())
+                .build();
     }
 
-    public Filiere findById(Integer id) {
-        return filiereRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Filière introuvable"));
+    public List<FiliereDTO> findAll() {
+        return filiereRepository.findAll()
+                .stream()
+                .map(this::toDTO)
+                .toList();
     }
 
-    public Filiere create(Filiere filiere) {
-        return filiereRepository.save(filiere);
+    public FiliereDTO findById(Integer id) {
+        Filiere filiere = filiereRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Filière introuvable"));
+        return toDTO(filiere);
     }
 
-    public Filiere update(Integer id, Filiere filiere) {
-        Filiere existing = findById(id);
-        existing.setNom(filiere.getNom());
-        return filiereRepository.save(existing);
+    public FiliereDTO create(FiliereRequestDTO request) {
+        Filiere filiere = Filiere.builder()
+                .nom(request.getNom())
+                .build();
+        return toDTO(filiereRepository.save(filiere));
     }
 
+    public FiliereDTO update(Integer id, FiliereRequestDTO request) {
+        Filiere existing = filiereRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Filière introuvable"));
+        existing.setNom(request.getNom());
+        return toDTO(filiereRepository.save(existing));
+    }
 
     public void deleteById(Integer id) {
         if (!filiereRepository.existsById(id)) {
