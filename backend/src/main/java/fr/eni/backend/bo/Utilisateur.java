@@ -33,7 +33,7 @@ public class Utilisateur implements UserDetails {
     @NonNull
     @NotBlank
     @Size(max = 50)
-    @Column(name = "USER_REGISTRATION", nullable = false, unique = true)
+    @Column(name = "USER_REGISTRATION", nullable = false, unique = true, length = 50)
     private String immatriculation;
 
     @NotNull
@@ -66,9 +66,6 @@ public class Utilisateur implements UserDetails {
 
     @Column(name = "CREATION_DATE")
     private LocalDate dateCreation;
-
-    // TODO A modifier quand les relations seront faites
-    private String authority;
 
     @Override
     public String getPassword() {
