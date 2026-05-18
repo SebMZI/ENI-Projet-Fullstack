@@ -1,6 +1,5 @@
 package fr.eni.backend.bo;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -89,7 +88,7 @@ public class Utilisateur implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(authority));
+        return roles.stream().map(role ->  new SimpleGrantedAuthority(role.getRole())).toList();
     }
 
     @OneToOne(orphanRemoval = true, fetch = FetchType.EAGER)
