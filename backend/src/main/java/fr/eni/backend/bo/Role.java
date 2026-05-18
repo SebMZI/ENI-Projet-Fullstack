@@ -15,7 +15,6 @@ import lombok.*;
 @Table(name = "ROLE")
 @IdClass(RolePK.class)
 public class Role {
-
     @Id
     @NonNull
     @NotBlank

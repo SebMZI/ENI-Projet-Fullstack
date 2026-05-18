@@ -68,9 +68,6 @@ public class Utilisateur implements UserDetails {
     @Column(name = "CREATION_DATE")
     private LocalDate dateCreation;
 
-    // TODO A modifier quand les relations seront faites
-    private String authority;
-
     @Override
     public String getPassword() {
         return motDePasse;
