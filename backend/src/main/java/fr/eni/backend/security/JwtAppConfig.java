@@ -49,7 +49,7 @@ public class JwtAppConfig {
 
             @Override
             public boolean supports(Class<?> authentication) {
-                return false;
+                return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
             }
         };
     }
@@ -62,7 +62,7 @@ public class JwtAppConfig {
 
     // Encodeur de mdp
     @Bean
-    PasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 }
