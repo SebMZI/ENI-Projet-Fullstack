@@ -25,7 +25,7 @@ public class Promotion {
     @NonNull
     @NotBlank
     @Size(max = 100)
-    @Column(name="PROMOTION_NAME")
+    @Column(name="PROMOTION_NAME", length = 100)
     private String nom;
 
     @Column(name = "START_DATE", nullable = false)

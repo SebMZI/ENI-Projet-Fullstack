@@ -24,7 +24,7 @@ public class Cours {
 
     @NotNull
     @NotBlank
-    @Size(max=255)
+    @Size(max=250)
     @Column(name = "COURSE_TITLE", nullable = false, length = 250)
     private String titre;
 

@@ -24,12 +24,12 @@ public class Cursus {
 
     @NonNull
     @NotBlank
-    @Size(max = 150)
+    @Size(max = 250)
     @Column(name = "CURSUS_NAME", nullable = false, length = 250)
     private String intitule;
 
     @NotNull
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "CURSUS_ID")
     private @Builder.Default List<Cours> cours = new ArrayList<>();
 

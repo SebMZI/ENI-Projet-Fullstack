@@ -2,6 +2,7 @@ package fr.eni.backend.bo;
 
 import fr.eni.backend.bo.key.RolePK;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +19,8 @@ import lombok.NoArgsConstructor;
 public class Role {
 
     @Id
-    @Column(name = "USER_REGISTRATION", nullable = false)
+    @Size(max = 50)
+    @Column(name = "USER_REGISTRATION", nullable = false, length = 50)
     private String immatriculation;
 
     @Id

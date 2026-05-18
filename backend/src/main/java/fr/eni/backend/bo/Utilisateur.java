@@ -33,19 +33,19 @@ public class Utilisateur implements UserDetails {
     @NonNull
     @NotBlank
     @Size(max = 50)
-    @Column(name = "USER_REGISTRATION", nullable = false, unique = true)
+    @Column(name = "USER_REGISTRATION", nullable = false, unique = true, length = 50)
     private String immatriculation;
 
     @NotNull
     @NotBlank
     @Size(max = 150)
-    @Column(name = "USER_LAST_NAME", nullable = false, length = 100)
+    @Column(name = "USER_LAST_NAME", nullable = false, length = 150)
     private String nom;
 
     @NotNull
     @NotBlank
     @Size(max = 150)
-    @Column(name = "USER_FIRST_NAME", nullable = false, length = 100)
+    @Column(name = "USER_FIRST_NAME", nullable = false, length = 150)
     private String prenom;
 
     @NotNull
@@ -56,6 +56,7 @@ public class Utilisateur implements UserDetails {
 
     @NotBlank
     @Email
+    @Size(max = 150)
     @Column(name = "USER_EMAIL", nullable = false, unique = true, length = 150)
     @Pattern(regexp="^[\\w-\\.]+@campus-eni.fr$")
     private String email;
@@ -109,8 +110,18 @@ public class Utilisateur implements UserDetails {
     @JoinColumn(name = "ADDRESS_ID")
     private Adresse adresse;
 
-    @EqualsAndHashCode.Exclude
+    //TODO A valider
+
+    /*@EqualsAndHashCode.Exclude
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_REGISTRATION")
+    private @Builder.Default List<Role> roles = new ArrayList<>();*/
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "USER_ROLE",
+            joinColumns = {@JoinColumn(name = "USER_REGISTRATION", referencedColumnName = "USER_REGISTRATION")},
+            inverseJoinColumns = {@JoinColumn(name = "ROLE", referencedColumnName = "ROLE")})
+    @ToString.Exclude
     private @Builder.Default List<Role> roles = new ArrayList<>();
+
 }
