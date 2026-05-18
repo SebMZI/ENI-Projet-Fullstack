@@ -2,6 +2,7 @@ package fr.eni.backend.bo;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,24 +31,37 @@ public class Utilisateur implements UserDetails {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
+    @NonNull
+    @NotBlank
+    @Size(max = 50)
     @Column(name = "USER_REGISTRATION", nullable = false, unique = true)
     private String immatriculation;
 
+    @NotNull
+    @NotBlank
+    @Size(max = 150)
     @Column(name = "USER_LAST_NAME", nullable = false, length = 100)
     private String nom;
 
+    @NotNull
+    @NotBlank
+    @Size(max = 150)
     @Column(name = "USER_FIRST_NAME", nullable = false, length = 100)
     private String prenom;
 
+    @NotNull
+    @NotBlank
+    @Size(max = 255)
     @Column(name = "USER_PASSWORD", nullable = false, length = 255)
     private String motDePasse;
 
-    @Column(name = "USER_EMAIL", nullable = false, length = 150)
+    @NotBlank
+    @Email
+    @Column(name = "USER_EMAIL", nullable = false, unique = true, length = 150)
+    @Pattern(regexp="^[\\w-\\.]+@campus-eni.fr$")
     private String email;
 
+    @Size(max = 10)
     @Column(name = "USER_PHONE", nullable = false, length = 150)
     private String telephone;
 

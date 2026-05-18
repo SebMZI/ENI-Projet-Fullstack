@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -20,6 +21,7 @@ import lombok.experimental.SuperBuilder;
 //@DiscriminatorValue(value = "F")
 public class Formateur extends Utilisateur{
 
+    @Size(max = 50)
     @Column(name = "TEACHER_STATUS", length = 100)
     private String statut;
 }

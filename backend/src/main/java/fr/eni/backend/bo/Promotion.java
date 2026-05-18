@@ -1,6 +1,8 @@
 package fr.eni.backend.bo;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -20,8 +22,11 @@ public class Promotion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name="REFERENCE")
-    private String numero;
+    @NonNull
+    @NotBlank
+    @Size(max = 100)
+    @Column(name="PROMOTION_NAME")
+    private String nom;
 
     @Column(name = "START_DATE", nullable = false)
     private LocalDate dateDebut;

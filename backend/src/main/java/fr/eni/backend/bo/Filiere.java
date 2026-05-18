@@ -1,6 +1,8 @@
 package fr.eni.backend.bo;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -19,6 +21,9 @@ public class Filiere {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NonNull
+    @NotBlank
+    @Size(max = 100)
     @Column(name = "FIELD_NAME")
     private String nom;
 
