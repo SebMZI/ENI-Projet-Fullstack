@@ -103,7 +103,7 @@ public class Utilisateur implements UserDetails {
         return roles.stream().map(role ->  new SimpleGrantedAuthority(role.getRole())).toList();
     }
 
-    @OneToOne(orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToOne(orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "ADDRESS_ID")
     private Adresse adresse;
 

@@ -24,7 +24,7 @@ public class CoursPlanifie extends Cours {
     @Column(name = "END_DATE", nullable = false)
     private LocalDate dateFin;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "TRAINER_ID")
     private Formateur formateur;
 }

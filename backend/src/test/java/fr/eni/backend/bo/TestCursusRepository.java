@@ -11,8 +11,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @Slf4j
 @DataJpaTest
@@ -63,8 +65,8 @@ public class TestCursusRepository {
     }
 
     @Test
-    public void TestCursus_save(){
-        Cursus cursusDB = cursusRepository.save(cursus);
+    public void testCursus_save(){
+        final Cursus cursusDB = cursusRepository.save(cursus);
 
         assertThat(cursusDB.getId()).isGreaterThan(0);
 
@@ -80,4 +82,55 @@ public class TestCursusRepository {
 
         log.info("Cursus: {}", cursusDB);
     }
+
+    //Pas cascade avec promotion et cours
+    @Test
+    public void testCursus_delete() {
+        final Cursus cursusDB = testEntityManager.persist(cursus);
+        testEntityManager.flush();
+
+        assertThat(cursusDB.getId()).isGreaterThan(0);
+
+        List<Cours> listeCoursDB = cursusDB.getCours();
+        List<Integer> idsCoursDB = listeCoursDB
+                .stream()
+                .map(Cours::getId)
+                .collect(Collectors.toList());
+
+        List<Promotion> listePromotionDB = cursusDB.getPromotions();
+        List<Integer> idsPromotionDB = listePromotionDB
+                .stream()
+                .map(Promotion::getId)
+                .collect(Collectors.toList());
+
+        cursusRepository.delete(cursusDB);
+
+        // Vérification que l'entité a été supprimée
+        final Cursus cursusDB2 = testEntityManager.find(Cursus.class, cursus.getId());
+        assertNull(cursusDB2);
+
+
+        log.info(idsCoursDB.toString());
+        log.info(idsPromotionDB.toString());
+
+        //Vérification que les cours et les promotions sont conservées
+        idsCoursDB.forEach(id -> {
+            assertThat(id).isNotNull();
+            final Cours coursDB2 = testEntityManager.find(Cours.class, id);
+            assertThat(coursDB2.getId()).isGreaterThan(0);
+            assertThat(coursDB2).isNotNull();
+        });
+
+        idsPromotionDB.forEach(id -> {
+            assertThat(id).isNotNull();
+            final Promotion promotionDB2 = testEntityManager.find(Promotion.class, id);
+            assertThat(promotionDB2.getId()).isGreaterThan(0);
+            assertThat(promotionDB2).isNotNull();
+        });
+
+        log.info("Cursus: {}", cursusDB2);
+    }
+
+
+
 }

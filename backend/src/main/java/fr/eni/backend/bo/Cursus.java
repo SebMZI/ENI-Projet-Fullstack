@@ -29,11 +29,11 @@ public class Cursus {
     private String intitule;
 
     @NotNull
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "CURSUS_ID")
     private @Builder.Default List<Cours> cours = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "CURSUS_ID")
     private @Builder.Default List<Promotion> promotions = new ArrayList<>();
 
