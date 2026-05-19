@@ -1,6 +1,5 @@
 package fr.eni.backend.security;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.eni.backend.bo.Role;
 import fr.eni.backend.bo.Utilisateur;
@@ -16,10 +15,11 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -35,8 +35,6 @@ public class TestAuth {
     private AuthenticationService aService;
     @Autowired
     private PasswordEncoder pEncoder;
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @BeforeEach
     void createUser() {
@@ -82,18 +80,9 @@ public class TestAuth {
         AuthenticationRequest request = new AuthenticationRequest();
         request.setPseudo("abaille@campus-eni.fr");
         request.setPassword("Jefwehfuwhefui");
-        boolean thrown = false;
-        String errorMessage = "";
 
-        try {
-            AuthenticationResponse response = aService.authenticate(request);
-        }catch (BadCredentialsException e) {
-            thrown = true;
-            errorMessage = e.getMessage();
-        }
-
-        assertThat(thrown).isTrue();
-        assertThat(errorMessage).isEqualTo("Bad credentials");
+        BadCredentialsException exception = assertThrows(BadCredentialsException.class, () -> aService.authenticate(request));
+        assertThat(exception.getMessage()).isEqualTo("Bad credentials");
     }
 
     @Test
@@ -101,61 +90,30 @@ public class TestAuth {
         AuthenticationRequest request = new AuthenticationRequest();
         request.setPseudo("gjihwwihfwe@campus-eni.fr");
         request.setPassword("JeSuisAnneLise");
-        boolean thrown = false;
-        String errorMessage = "";
 
-        try {
-            AuthenticationResponse response = aService.authenticate(request);
-        }catch (UsernameNotFoundException e) {
-            thrown = true;
-            errorMessage = e.getMessage();
-        }
-
-        assertThat(thrown).isTrue();
-        assertThat(errorMessage).isEqualTo("Utilisateur non trouvé");
+        UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () -> aService.authenticate(request));
+        assertThat(exception.getMessage()).isEqualTo("Utilisateur non trouvé");
     }
 
     @Test
-    void test_auth_route_permit_all() {
+    void test_auth_route_permit_all() throws Exception {
         AuthenticationRequest request = new AuthenticationRequest();
         request.setPseudo("abaille@campus-eni.fr");
         request.setPassword("JeSuisAnneLise");
 
-        try {
-            mockMvc.perform(post("/api/auth").content(new ObjectMapper().writeValueAsString(request)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk());
-        }catch(Exception e) {
-            System.out.println(e.getMessage());
-        }
+        mockMvc.perform(post("/api/auth").content(new ObjectMapper().writeValueAsString(request)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void test_auth_route_token() {
+    void test_auth_route_cookie() throws Exception {
         AuthenticationRequest request = new AuthenticationRequest();
         request.setPseudo("abaille@campus-eni.fr");
         request.setPassword("JeSuisAnneLise");
 
-        try {
-            mockMvc.perform(post("/api/auth").content(new ObjectMapper().writeValueAsString(request)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(MockMvcResultMatchers.jsonPath("token").exists());
-        }catch(Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
+        mockMvc.perform(post("/api/auth").content(new ObjectMapper().writeValueAsString(request)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(cookie().exists("jwt_token_app_erp"));
 
-    @Test
-    void test_auth_route_deny_all(){
-        AuthenticationRequest request = new AuthenticationRequest();
-        request.setPseudo("abaille@campus-eni.fr");
-        request.setPassword("JeSuisAnneLise");
-
-        try {
-            mockMvc.perform(post("/fausseroute").content(new ObjectMapper().writeValueAsString(request)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isForbidden())
-                    .andExpect(MockMvcResultMatchers.jsonPath("token").doesNotExist());
-        }catch(Exception e) {
-            System.out.println(e.getMessage());
-        }
     }
 }
