@@ -19,8 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -115,5 +114,34 @@ public class TestAuth {
                 .andExpect(status().isOk())
                 .andExpect(cookie().exists("jwt_token_app_erp"));
 
+    }
+
+    @Test
+    void test_auth_dto() throws Exception{
+        AuthenticationRequest request = new AuthenticationRequest();
+        request.setPseudo("abaille@campus-eni.fr");
+        request.setPassword("JeSuisAnneLise");
+
+
+        mockMvc.perform(post("/api/auth").content(new ObjectMapper().writeValueAsString(request)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(cookie().exists("jwt_token_app_erp"))
+                .andExpect(jsonPath("$.email").value("abaille@campus-eni.fr"))
+                .andExpect(jsonPath("$.prenom").value("Anne-Lise"))
+                .andExpect(jsonPath("$.nom").value("BAILLE"))
+                .andExpect(jsonPath("$.roles").isArray())
+                .andExpect(jsonPath("$.roles[0]").value("ROLE_ADMIN"));
+    }
+
+    @Test
+    void test_auth_dto_no_pwd() throws Exception {
+        AuthenticationRequest request = new AuthenticationRequest();
+        request.setPseudo("abaille@campus-eni.fr");
+        request.setPassword("JeSuisAnneLise");
+
+
+        mockMvc.perform(post("/api/auth").content(new ObjectMapper().writeValueAsString(request)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.password").doesNotExist());
     }
 }

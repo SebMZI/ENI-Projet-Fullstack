@@ -34,7 +34,7 @@ public class AuthenticationController {
                     .build();
 
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(auth.getUtilisateurDto());
         }catch (Exception e) {
             return ResponseEntity.status(401).body("Authentication failed: " + e.getMessage());
         }
