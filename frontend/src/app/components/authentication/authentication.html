@@ -1,0 +1,33 @@
+<div class="authentication-content">
+  <h2>Authentification</h2>
+  <form [formGroup]="authForm" (ngSubmit)="onSubmit()">
+    <div class="field">
+      <label for="pseudo">Email</label>
+      <input type="text" id="pseudo" name="pseudo" placeholder="example@campus-eni.fr" formControlName="pseudo" >
+    </div>
+    <div class="field">
+      <label for="password">Mot de passe</label>
+      <input type="password" id="password" name="password" formControlName="password" >
+    </div>
+
+    @if(authForm.invalid && authForm.touched) {
+      @if (pseudo?.hasError('pattern')) {
+        <div class="auth-error">Email is invalid</div>
+      }
+
+      @if (pseudo?.hasError('required')) {
+        <div class="auth-error">Email is required!</div>
+      }
+
+      @if (password?.hasError('required')) {
+        <div class="auth-error">Password is required!</div>
+      }
+    }
+
+    @if(errorMsg()) {
+      <div class="auth-error">{{errorMsg()}}</div>
+    }
+
+    <button type="submit">Connexion</button>
+  </form>
+</div>
