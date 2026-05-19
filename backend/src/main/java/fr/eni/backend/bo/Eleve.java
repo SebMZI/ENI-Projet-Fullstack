@@ -30,7 +30,7 @@ public class Eleve extends Utilisateur {
     private String emailPersonnel;
 
 
-    @Column(name = "STUDENT_SUBSCRIPTION_DATE", length = 100)
+    @Column(name = "STUDENT_SUBSCRIPTION_DATE")
     private LocalDate dateInscription;
 
 }

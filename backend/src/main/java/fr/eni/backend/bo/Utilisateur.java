@@ -15,9 +15,12 @@ import java.util.List;
 
 import java.util.Collection;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(of="immatriculation")
+@ToString
 @SuperBuilder
 
 @Entity
@@ -114,7 +117,7 @@ public class Utilisateur implements UserDetails {
     @JoinColumn(name = "USER_REGISTRATION")
     private @Builder.Default List<Role> roles = new ArrayList<>();*/
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "USER_ROLE",
             joinColumns = {@JoinColumn(name = "USER_REGISTRATION", referencedColumnName = "USER_REGISTRATION")},
             inverseJoinColumns = {@JoinColumn(name = "ROLE", referencedColumnName = "ROLE")})

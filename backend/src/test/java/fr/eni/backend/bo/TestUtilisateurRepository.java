@@ -110,9 +110,9 @@ public class TestUtilisateurRepository {
         assertNull(adresseDB2);
 
 
-        /*rolesListe.forEach(role -> {
-            assertThat(role).isNotNull();
-            RolePK pk = new RolePK(role.getImmatriculation(), role.getRole());
+        /*listeRolesPK.forEach(pk -> {
+            assertThat(pk).isNotNull();
+            *//*RolePK pk = new RolePK(role.getImmatriculation(), role.getRole());*//*
             final Role roleDB2 = testEntityManager.find(Role.class, pk);
             assertNull(roleDB2);
         });*/
