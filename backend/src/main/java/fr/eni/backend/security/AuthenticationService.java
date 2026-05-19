@@ -68,7 +68,6 @@ public class AuthenticationService {
             throw new BadCredentialsException("Invalid token: token not valid");
         }
 
-
         return UtilisateurDto.builder()
                 .immatriculation(utilisateur.getImmatriculation())
                 .email(utilisateur.getEmail())
