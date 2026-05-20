@@ -29,7 +29,7 @@ public class Cours {
     private String titre;
 
     @NotNull
-    @NotBlank
+    //  @NotBlank
     @Column(name = "COURSE_DURATION", nullable = false)
     private Integer duree;
 }

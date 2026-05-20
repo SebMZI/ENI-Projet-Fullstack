@@ -25,4 +25,9 @@ public class Role {
     @Id
     @Column(name = "ROLE")
     private String role;
+
+    // Relation ManyToOne vers Utilisateur
+    @ManyToOne
+    @JoinColumn(name = "USER_REGISTRATION", insertable = false, updatable = false)
+    private Utilisateur utilisateur;
 }

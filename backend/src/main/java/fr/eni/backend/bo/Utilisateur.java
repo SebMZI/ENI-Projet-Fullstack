@@ -106,8 +106,13 @@ public class Utilisateur implements UserDetails {
     @JoinColumn(name = "ADDRESS_ID")
     private Adresse adresse;
 
-    @EqualsAndHashCode.Exclude
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "USER_REGISTRATION")
+    // AVANT 
+    // @EqualsAndHashCode.Exclude
+    // @OneToMany(fetch = FetchType.EAGER)
+    // @JoinColumn(name = "USER_REGISTRATION")
+    // private @Builder.Default List<Role> roles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "immatriculation", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private @Builder.Default List<Role> roles = new ArrayList<>();
+
 }
