@@ -15,9 +15,12 @@ import java.util.List;
 
 import java.util.Collection;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(of="immatriculation")
+@ToString
 @SuperBuilder
 
 @Entity
@@ -39,13 +42,13 @@ public class Utilisateur implements UserDetails {
     @NotNull
     @NotBlank
     @Size(max = 150)
-    @Column(name = "USER_LAST_NAME", nullable = false, length = 100)
+    @Column(name = "USER_LAST_NAME", nullable = false, length = 150)
     private String nom;
 
     @NotNull
     @NotBlank
     @Size(max = 150)
-    @Column(name = "USER_FIRST_NAME", nullable = false, length = 100)
+    @Column(name = "USER_FIRST_NAME", nullable = false, length = 150)
     private String prenom;
 
     @NotNull
@@ -56,6 +59,7 @@ public class Utilisateur implements UserDetails {
 
     @NotBlank
     @Email
+    @Size(max = 150)
     @Column(name = "USER_EMAIL", nullable = false, unique = true, length = 150)
     @Pattern(regexp="^[\\w-\\.]+@campus-eni.fr$")
     private String email;
@@ -102,18 +106,23 @@ public class Utilisateur implements UserDetails {
         return roles.stream().map(role ->  new SimpleGrantedAuthority(role.getRole())).toList();
     }
 
-    @OneToOne(orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToOne(orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "ADDRESS_ID")
     private Adresse adresse;
 
+    //TODO A valider
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    /*@EqualsAndHashCode.Exclude
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "USER_REGISTRATION")
+    private @Builder.Default List<Role> roles = new ArrayList<>();*/
+
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "USER_ROLE",
-            joinColumns = @JoinColumn(name = "USER_REGISTRATION", referencedColumnName = "USER_REGISTRATION"),
-            inverseJoinColumns = @JoinColumn(name = "ROLE_ID", referencedColumnName = "ROLE_ID"))
+            joinColumns = {@JoinColumn(name = "USER_REGISTRATION", referencedColumnName = "USER_REGISTRATION")},
+            inverseJoinColumns = {@JoinColumn(name = "ROLE_ID", referencedColumnName = "ROLE_ID")})
     @ToString.Exclude
-    @Builder.Default
-    private List<Role> roles = new ArrayList<>();
+    private @Builder.Default List<Role> roles = new ArrayList<>();
 
 }
  

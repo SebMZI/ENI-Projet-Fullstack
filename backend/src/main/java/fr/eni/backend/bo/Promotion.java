@@ -25,7 +25,7 @@ public class Promotion {
     @NonNull
     @NotBlank
     @Size(max = 100)
-    @Column(name="PROMOTION_NAME")
+    @Column(name="PROMOTION_NAME", length = 100)
     private String nom;
 
     @Column(name = "START_DATE", nullable = false)
@@ -34,11 +34,11 @@ public class Promotion {
     @Column(name = "END_DATE", nullable = false)
     private LocalDate dateFin;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "PROMOTION_ID")
     private @Builder.Default List<CoursPlanifie> coursPlanifies = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "PROMOTION_STUDENT",
     joinColumns = {@JoinColumn(name = "PROMOTION_ID")},
     inverseJoinColumns = {@JoinColumn(name = "STUDENT_ID")})
