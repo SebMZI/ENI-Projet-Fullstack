@@ -1,7 +1,5 @@
 package fr.eni.backend.bo;
 
-
-import fr.eni.backend.bo.key.RolePK;
 import fr.eni.backend.dao.RoleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -28,7 +26,6 @@ public class TestRoleRepository {
     public void testRole_save() {
         role = Role
                 .builder()
-                .immatriculation("XXXXXXXXX")
                 .role("ROLE_ADMIN")
                 .build();
 
@@ -40,7 +37,6 @@ public class TestRoleRepository {
     public void testRole_delete() {
         role = Role
                 .builder()
-                .immatriculation("XXXXXXXXX")
                 .role("ROLE_ADMIN")
                 .build();
 
@@ -49,8 +45,7 @@ public class TestRoleRepository {
 
         roleRepository.delete(roleDB);
 
-        RolePK pk = new RolePK(role.getImmatriculation(), role.getRole());
-        final Role roleDB2 = testEntityManager.find(Role.class, pk);
+        final Role roleDB2 = testEntityManager.find(Role.class, role.getId());
         assertNull(roleDB2);
     }
 }

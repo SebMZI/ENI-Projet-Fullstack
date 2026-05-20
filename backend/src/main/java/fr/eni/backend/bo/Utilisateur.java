@@ -117,10 +117,10 @@ public class Utilisateur implements UserDetails {
     @JoinColumn(name = "USER_REGISTRATION")
     private @Builder.Default List<Role> roles = new ArrayList<>();*/
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "USER_ROLE",
             joinColumns = {@JoinColumn(name = "USER_REGISTRATION", referencedColumnName = "USER_REGISTRATION")},
-            inverseJoinColumns = {@JoinColumn(name = "ROLE", referencedColumnName = "ROLE")})
+            inverseJoinColumns = {@JoinColumn(name = "ROLE_ID", referencedColumnName = "ROLE_ID")})
     @ToString.Exclude
     private @Builder.Default List<Role> roles = new ArrayList<>();
 

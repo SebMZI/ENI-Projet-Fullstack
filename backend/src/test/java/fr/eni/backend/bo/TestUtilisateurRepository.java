@@ -1,7 +1,5 @@
 package fr.eni.backend.bo;
 
-import fr.eni.backend.bo.key.RolePK;
-import fr.eni.backend.dao.AdministrateurRepository;
 import fr.eni.backend.dao.UtilisateurRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +37,6 @@ public class TestUtilisateurRepository {
         for (int i = 1; i < 4; i++) {
             final Role role = Role
                     .builder()
-                    .immatriculation("XXXXXXXX")
                     .role("ROLE_" + i)
                     .build();
             rolesListe.add(role);
@@ -95,10 +92,6 @@ public class TestUtilisateurRepository {
 
         assertThat(utilisateurDB.getAdresse()).isNotNull();
 
-        List<RolePK> listeRolesPK = utilisateurDB.getRoles()
-                .stream()
-                .map(role -> new RolePK(role.getImmatriculation(), role.getRole()))
-                .collect(Collectors.toUnmodifiableList());
 
         utilisateurRepository.delete(utilisateurDB);
 
@@ -109,12 +102,5 @@ public class TestUtilisateurRepository {
         final Adresse adresseDB2 = testEntityManager.find(Adresse.class, adresse.getId());
         assertNull(adresseDB2);
 
-
-        /*listeRolesPK.forEach(pk -> {
-            assertThat(pk).isNotNull();
-            *//*RolePK pk = new RolePK(role.getImmatriculation(), role.getRole());*//*
-            final Role roleDB2 = testEntityManager.find(Role.class, pk);
-            assertNull(roleDB2);
-        });*/
     }
 }
