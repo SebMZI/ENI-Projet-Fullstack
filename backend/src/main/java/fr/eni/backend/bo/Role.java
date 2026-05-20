@@ -1,6 +1,5 @@
 package fr.eni.backend.bo;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 

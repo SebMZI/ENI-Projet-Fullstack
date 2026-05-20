@@ -1,11 +1,11 @@
 package fr.eni.backend.security;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.eni.backend.bo.Role;
 import fr.eni.backend.bo.Utilisateur;
 import fr.eni.backend.dao.RoleRepository;
 import fr.eni.backend.dao.UtilisateurRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +16,13 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
 public class TestAuth {
@@ -35,8 +36,8 @@ public class TestAuth {
     private AuthenticationService aService;
     @Autowired
     private PasswordEncoder pEncoder;
-    @Autowired
-    private ObjectMapper objectMapper;
+
+    Utilisateur annelise;
 
     @BeforeEach
     void createUser() {
@@ -45,7 +46,7 @@ public class TestAuth {
 
         String mdpEncoded = pEncoder.encode("JeSuisAnneLise");
 
-        Utilisateur utilisateur = Utilisateur.builder()
+        annelise = Utilisateur.builder()
                 .immatriculation("ENI_25039285")
                 .nom("BAILLE")
                 .prenom("Anne-Lise")
@@ -54,7 +55,7 @@ public class TestAuth {
                 .telephone("0600000000")
                 .build();
 
-        utilisateurRepository.saveAndFlush(utilisateur);
+        utilisateurRepository.saveAndFlush(annelise);
 
         Role roleAdmin = Role.builder()
                 .immatriculation("ENI_25039285")
@@ -74,7 +75,7 @@ public class TestAuth {
         request.setPassword("JeSuisAnneLise");
 
         AuthenticationResponse response = aService.authenticate(request);
-        assertThat(response.getToken()).isNotNull();
+        assertThat(response.getUtilisateur()).isNotNull();
     }
 
     @Test
@@ -82,18 +83,9 @@ public class TestAuth {
         AuthenticationRequest request = new AuthenticationRequest();
         request.setPseudo("abaille@campus-eni.fr");
         request.setPassword("Jefwehfuwhefui");
-        boolean thrown = false;
-        String errorMessage = "";
 
-        try {
-            AuthenticationResponse response = aService.authenticate(request);
-        }catch (BadCredentialsException e) {
-            thrown = true;
-            errorMessage = e.getMessage();
-        }
-
-        assertThat(thrown).isTrue();
-        assertThat(errorMessage).isEqualTo("Bad credentials");
+        BadCredentialsException exception = assertThrows(BadCredentialsException.class, () -> aService.authenticate(request));
+        assertThat(exception.getMessage()).isEqualTo("Bad credentials");
     }
 
     @Test
@@ -101,61 +93,46 @@ public class TestAuth {
         AuthenticationRequest request = new AuthenticationRequest();
         request.setPseudo("gjihwwihfwe@campus-eni.fr");
         request.setPassword("JeSuisAnneLise");
-        boolean thrown = false;
-        String errorMessage = "";
 
-        try {
-            AuthenticationResponse response = aService.authenticate(request);
-        }catch (UsernameNotFoundException e) {
-            thrown = true;
-            errorMessage = e.getMessage();
-        }
-
-        assertThat(thrown).isTrue();
-        assertThat(errorMessage).isEqualTo("Utilisateur non trouvé");
+        UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () -> aService.authenticate(request));
+        assertThat(exception.getMessage()).isEqualTo("Utilisateur non trouvé");
     }
 
     @Test
-    void test_auth_route_permit_all() {
+    void test_auth_route_permit_all() throws Exception {
         AuthenticationRequest request = new AuthenticationRequest();
         request.setPseudo("abaille@campus-eni.fr");
         request.setPassword("JeSuisAnneLise");
 
-        try {
-            mockMvc.perform(post("/api/auth").content(new ObjectMapper().writeValueAsString(request)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk());
-        }catch(Exception e) {
-            System.out.println(e.getMessage());
-        }
+        mockMvc.perform(post("/api/auth").content(new ObjectMapper().writeValueAsString(request)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void test_auth_route_token() {
+    void test_auth_dto() throws Exception{
         AuthenticationRequest request = new AuthenticationRequest();
         request.setPseudo("abaille@campus-eni.fr");
         request.setPassword("JeSuisAnneLise");
 
-        try {
-            mockMvc.perform(post("/api/auth").content(new ObjectMapper().writeValueAsString(request)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(MockMvcResultMatchers.jsonPath("token").exists());
-        }catch(Exception e) {
-            System.out.println(e.getMessage());
-        }
+
+        mockMvc.perform(post("/api/auth").content(new ObjectMapper().writeValueAsString(request)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.utilisateur.email").value("abaille@campus-eni.fr"))
+                .andExpect(jsonPath("$.utilisateur.prenom").value("Anne-Lise"))
+                .andExpect(jsonPath("$.utilisateur.nom").value("BAILLE"))
+                .andExpect(jsonPath("$.utilisateur.roles").isArray())
+                .andExpect(jsonPath("$.utilisateur.roles[0]").value("ROLE_ADMIN"))
+                .andExpect(jsonPath("$.token").isNotEmpty());
     }
 
     @Test
-    void test_auth_route_deny_all(){
+    void test_auth_dto_no_pwd() throws Exception {
         AuthenticationRequest request = new AuthenticationRequest();
         request.setPseudo("abaille@campus-eni.fr");
         request.setPassword("JeSuisAnneLise");
 
-        try {
-            mockMvc.perform(post("/fausseroute").content(new ObjectMapper().writeValueAsString(request)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isForbidden())
-                    .andExpect(MockMvcResultMatchers.jsonPath("token").doesNotExist());
-        }catch(Exception e) {
-            System.out.println(e.getMessage());
-        }
+
+        mockMvc.perform(post("/api/auth").content(new ObjectMapper().writeValueAsString(request)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.utilisateur.password").doesNotExist());
     }
 }

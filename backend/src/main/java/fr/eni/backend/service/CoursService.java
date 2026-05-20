@@ -1,7 +1,7 @@
 package fr.eni.backend.service;
 
 import fr.eni.backend.bo.Cours;
-import fr.eni.backend.dao.CoursRepositiry;
+import fr.eni.backend.dao.CoursRepository;
 import fr.eni.backend.dto.CoursDTO;
 import fr.eni.backend.dto.CoursRequestDTO;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CoursService {
 
-    private final CoursRepositiry coursRepository; 
+    private final CoursRepository coursRepository;
 
     private CoursDTO toDTO(Cours cours) {
         return CoursDTO.builder()

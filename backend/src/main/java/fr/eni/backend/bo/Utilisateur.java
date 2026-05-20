@@ -125,3 +125,4 @@ public class Utilisateur implements UserDetails {
     private @Builder.Default List<Role> roles = new ArrayList<>();
 
 }
+ 

@@ -3,7 +3,6 @@ package fr.eni.backend.bo;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-
 import java.time.LocalDate;
 
 @NoArgsConstructor
@@ -27,4 +26,8 @@ public class CoursPlanifie extends Cours {
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "TRAINER_ID")
     private Formateur formateur;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PROMOTION_ID")
+    private Promotion promotion;
 }
