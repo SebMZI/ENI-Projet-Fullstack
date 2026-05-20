@@ -5,6 +5,7 @@ import { Authenticate } from '../../dto/authenticate';
 import { lastValueFrom } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Utilisateur } from '../../interfaces/utilisateur';
+import { AuthResponse } from '../../interfaces/auth-response';
 
 @Component({
   selector: 'app-authentication',
@@ -33,12 +34,14 @@ export class Authentication {
       return;
     }
     try {
-      const response: Utilisateur = await lastValueFrom(
+      const response: AuthResponse = await lastValueFrom(
         this.authService.authenticate(<Authenticate> this.authForm.value),
       );
 
       console.log('Auth', response);
-      this.authService.utilisateur = response;
+      this.authService.utilisateur = response.utilisateur;
+      this.authService.setTokenInStorage(response.token);
+
     } catch (e: unknown) {
       const error = e as HttpErrorResponse;
       console.log('Error', error);

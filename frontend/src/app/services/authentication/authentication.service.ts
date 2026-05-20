@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import {environment} from '../../../environments/environment';
 import { Utilisateur } from '../../interfaces/utilisateur';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { AuthResponse } from '../../interfaces/auth-response';
 
 @Injectable({
   providedIn: 'root',
@@ -13,8 +14,8 @@ export class AuthenticationService {
   user$ = this.userSubject.asObservable();
   private http = inject(HttpClient);
 
-  public authenticate(credentials: Authenticate): Observable<Utilisateur> {
-    return this.http.post<Utilisateur>(`${environment.apiUrl}/auth`, credentials, {
+  public authenticate(credentials: Authenticate): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${environment.apiUrl}/auth`, credentials, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -30,8 +31,16 @@ export class AuthenticationService {
     this.userSubject.next(value);
   }
 
+  public setTokenInStorage(token: string): void {
+    sessionStorage.setItem('token', token);
+  }
+
+  public getTokenInStorage(): string | null {
+    return sessionStorage.getItem('token');
+  }
+
   public logout(): void{
     this.userSubject.next(null);
-    // Call api suppression cookie
+    sessionStorage.removeItem('token');
   }
 }
