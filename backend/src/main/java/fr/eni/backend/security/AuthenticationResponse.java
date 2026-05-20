@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 public class AuthenticationResponse {
     private String token;
-    private UtilisateurDto utilisateurDto;
+    private UtilisateurDto utilisateur = new UtilisateurDto();
 }

@@ -78,7 +78,7 @@ public class TestAuth {
         request.setPassword("JeSuisAnneLise");
 
         AuthenticationResponse response = aService.authenticate(request);
-        assertThat(response.getUtilisateurDto()).isNotNull();
+        assertThat(response.getUtilisateur()).isNotNull();
     }
 
     @Test
@@ -112,18 +112,6 @@ public class TestAuth {
     }
 
     @Test
-    void test_auth_route_cookie() throws Exception {
-        AuthenticationRequest request = new AuthenticationRequest();
-        request.setPseudo("abaille@campus-eni.fr");
-        request.setPassword("JeSuisAnneLise");
-
-        mockMvc.perform(post("/api/auth").content(new ObjectMapper().writeValueAsString(request)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(cookie().exists("jwt_token_app_erp"));
-
-    }
-
-    @Test
     void test_auth_dto() throws Exception{
         AuthenticationRequest request = new AuthenticationRequest();
         request.setPseudo("abaille@campus-eni.fr");
@@ -131,13 +119,12 @@ public class TestAuth {
 
 
         mockMvc.perform(post("/api/auth").content(new ObjectMapper().writeValueAsString(request)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(cookie().exists("jwt_token_app_erp"))
-                .andExpect(jsonPath("$.email").value("abaille@campus-eni.fr"))
-                .andExpect(jsonPath("$.prenom").value("Anne-Lise"))
-                .andExpect(jsonPath("$.nom").value("BAILLE"))
-                .andExpect(jsonPath("$.roles").isArray())
-                .andExpect(jsonPath("$.roles[0]").value("ROLE_ADMIN"));
+                .andExpect(jsonPath("$.utilisateur.email").value("abaille@campus-eni.fr"))
+                .andExpect(jsonPath("$.utilisateur.prenom").value("Anne-Lise"))
+                .andExpect(jsonPath("$.utilisateur.nom").value("BAILLE"))
+                .andExpect(jsonPath("$.utilisateur.roles").isArray())
+                .andExpect(jsonPath("$.utilisateur.roles[0]").value("ROLE_ADMIN"))
+                .andExpect(jsonPath("$.token").isNotEmpty());
     }
 
     @Test
@@ -149,27 +136,6 @@ public class TestAuth {
 
         mockMvc.perform(post("/api/auth").content(new ObjectMapper().writeValueAsString(request)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.password").doesNotExist());
-    }
-
-    @Test
-    void test_auth_checkLoggedIn() throws Exception{
-        AuthenticationRequest request = new AuthenticationRequest();
-        request.setPseudo("abaille@campus-eni.fr");
-        request.setPassword("JeSuisAnneLise");
-
-        MvcResult result = mockMvc.perform(post("/api/auth").content(new ObjectMapper().writeValueAsString(request)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andReturn();
-
-        assertThat(result.getResponse().getCookie("jwt_token_app_erp")).isNotNull();
-
-        Cookie jwt = result.getResponse().getCookie("jwt_token_app_erp");
-
-        mockMvc.perform(get("/api/auth/me").cookie(jwt)).andExpect(status().isOk())
-                .andExpect(jsonPath("$.email").value("abaille@campus-eni.fr"))
-                .andExpect(jsonPath("$.prenom").value("Anne-Lise"))
-                .andExpect(jsonPath("$.nom").value("BAILLE"))
-                .andExpect(jsonPath("$.roles").isArray())
-                .andExpect(jsonPath("$.roles[0]").value("ROLE_ADMIN")).andReturn();
+                .andExpect(jsonPath("$.utilisateur.password").doesNotExist());
     }
 }

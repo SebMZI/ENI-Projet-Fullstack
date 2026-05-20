@@ -2,7 +2,6 @@ package fr.eni.backend.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
@@ -23,26 +22,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        final Cookie[] cookies = request.getCookies();
-        String jwt = null;
+        final String authHeader = request.getHeader("Authorization");
+        final String jwt;
 
-        if (cookies == null) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        for(Cookie cookie : cookies) {
-            if(cookie.getName().equals("jwt_token_app_erp")) {
-                jwt = cookie.getValue();
-                break;
-            }
-        }
-
-        if (jwt == null) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
+        jwt = authHeader.substring(7);
         final String userEmail = jwtService.extractUserName(jwt);
         if(userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);

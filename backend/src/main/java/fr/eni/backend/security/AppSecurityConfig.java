@@ -25,8 +25,7 @@ public class AppSecurityConfig {
         http.authorizeHttpRequests(auth -> {
             // TODO A modifier quand on aura les routes définies
            auth.requestMatchers(HttpMethod.GET, "/").permitAll()
-                   .requestMatchers(HttpMethod.POST, "/api/auth").permitAll()
-                   .requestMatchers(HttpMethod.GET, "/api/auth/me").permitAll();
+                   .requestMatchers(HttpMethod.POST, "/api/auth").permitAll();
         });
 
         http.csrf(csrf -> csrf.disable());
