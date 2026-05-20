@@ -117,7 +117,7 @@ public class Utilisateur implements UserDetails {
     @JoinColumn(name = "USER_REGISTRATION")
     private @Builder.Default List<Role> roles = new ArrayList<>();*/
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "USER_ROLE",
             joinColumns = {@JoinColumn(name = "USER_REGISTRATION", referencedColumnName = "USER_REGISTRATION")},
             inverseJoinColumns = {@JoinColumn(name = "ROLE_ID", referencedColumnName = "ROLE_ID")})
