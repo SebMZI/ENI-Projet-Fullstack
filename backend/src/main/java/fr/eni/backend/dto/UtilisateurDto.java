@@ -1,20 +1,28 @@
 package fr.eni.backend.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import fr.eni.backend.bo.Role;
+import lombok.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UtilisateurDto {
+public class UtilisateurDTO {
     private String immatriculation;
-    private String email;
-    private String prenom;
     private String nom;
-    private List<String> roles;
+    private String prenom;
+    private String email;
+    private String telephone;
+    private String role;
+    private LocalDate dateCreation;
+
+    // Spécifiques (null si non concerné)
+    private String bureau;          // Referente
+    private String statut;          // Formateur
+    private String service;         // Administrateur
+    private String emailPersonnel;  // Eleve
+    private LocalDate dateInscription; // Eleve
 }
