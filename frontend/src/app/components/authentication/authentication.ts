@@ -6,6 +6,7 @@ import { lastValueFrom } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Utilisateur } from '../../interfaces/utilisateur';
 import { AuthResponse } from '../../interfaces/auth-response';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-authentication',
@@ -14,6 +15,7 @@ import { AuthResponse } from '../../interfaces/auth-response';
   styleUrl: './authentication.css',
 })
 export class Authentication {
+  private router = inject(Router);
   private authService = inject(AuthenticationService);
 
   public errorMsg = signal<string | undefined>(undefined);
@@ -41,7 +43,7 @@ export class Authentication {
       console.log('Auth', response);
       this.authService.utilisateur = response.utilisateur;
       this.authService.setTokenInStorage(response.token);
-
+      await this.router.navigate(['/']);
     } catch (e: unknown) {
       const error = e as HttpErrorResponse;
       console.log('Error', error);
