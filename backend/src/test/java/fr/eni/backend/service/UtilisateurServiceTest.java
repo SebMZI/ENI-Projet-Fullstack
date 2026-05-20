@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,9 +50,14 @@ class UtilisateurServiceTest {
     private Eleve eleve;
     private Formateur formateur;
     private UtilisateurRequestDTO requestDTO;
+    private Role roleEleve;
+    private Role roleFormateur;
 
     @BeforeEach
     void setUp() {
+        roleEleve = Role.builder().id(1).role("ELEVE").build();
+        roleFormateur = Role.builder().id(2).role("FORMATEUR").build();
+
         eleve = Eleve.builder()
                 .immatriculation("E001")
                 .nom("Dupont")
@@ -62,6 +68,7 @@ class UtilisateurServiceTest {
                 .dateCreation(LocalDate.now())
                 .emailPersonnel("jean.dupont@gmail.com")
                 .dateInscription(LocalDate.now())
+                .roles(new ArrayList<>(List.of(roleEleve)))
                 .build();
 
         formateur = Formateur.builder()
@@ -73,6 +80,7 @@ class UtilisateurServiceTest {
                 .telephone("0601020304")
                 .dateCreation(LocalDate.now())
                 .statut("Permanent")
+                .roles(new ArrayList<>(List.of(roleFormateur)))
                 .build();
 
         requestDTO = new UtilisateurRequestDTO();
@@ -125,7 +133,8 @@ class UtilisateurServiceTest {
         when(utilisateurRepository.existsById("E001")).thenReturn(false);
         when(passwordEncoder.encode("password123")).thenReturn("encodedPass");
         when(eleveRepository.save(any(Eleve.class))).thenReturn(eleve);
-        when(roleRepository.save(any(Role.class))).thenReturn(Role.builder().immatriculation("E001").role("ELEVE").build());
+        when(roleRepository.findByRole("ELEVE")).thenReturn(Optional.of(roleEleve));
+        when(utilisateurRepository.save(any(Utilisateur.class))).thenReturn(eleve);
 
         UtilisateurDTO result = utilisateurService.create(requestDTO);
 
@@ -133,7 +142,8 @@ class UtilisateurServiceTest {
         assertThat(result.getRole()).isEqualTo("ELEVE");
         assertThat(result.getEmailPersonnel()).isEqualTo("jean.dupont@gmail.com");
         verify(eleveRepository, times(1)).save(any(Eleve.class));
-        verify(roleRepository, times(1)).save(any(Role.class));
+        verify(roleRepository, times(1)).findByRole("ELEVE");
+        verify(utilisateurRepository, times(1)).save(any(Utilisateur.class));
     }
 
     @Test
@@ -156,6 +166,21 @@ class UtilisateurServiceTest {
                 .hasMessage("Rôle inconnu : INCONNU");
     }
 
+    @Test
+    void create_cree_role_si_inexistant() {
+        when(utilisateurRepository.existsById("E001")).thenReturn(false);
+        when(passwordEncoder.encode("password123")).thenReturn("encodedPass");
+        when(eleveRepository.save(any(Eleve.class))).thenReturn(eleve);
+        when(roleRepository.findByRole("ELEVE")).thenReturn(Optional.empty());
+        when(roleRepository.save(any(Role.class))).thenReturn(roleEleve);
+        when(utilisateurRepository.save(any(Utilisateur.class))).thenReturn(eleve);
+
+        UtilisateurDTO result = utilisateurService.create(requestDTO);
+
+        assertThat(result.getRole()).isEqualTo("ELEVE");
+        verify(roleRepository, times(1)).save(any(Role.class));
+    }
+
     // ──── create (FORMATEUR) ────
     @Test
     void create_formateur_sauvegarde_et_retourne_dto() {
@@ -167,7 +192,8 @@ class UtilisateurServiceTest {
         when(utilisateurRepository.existsById("F001")).thenReturn(false);
         when(passwordEncoder.encode("password123")).thenReturn("encodedPass");
         when(formateurRepository.save(any(Formateur.class))).thenReturn(formateur);
-        when(roleRepository.save(any(Role.class))).thenReturn(Role.builder().immatriculation("F001").role("FORMATEUR").build());
+        when(roleRepository.findByRole("FORMATEUR")).thenReturn(Optional.of(roleFormateur));
+        when(utilisateurRepository.save(any(Utilisateur.class))).thenReturn(formateur);
 
         UtilisateurDTO result = utilisateurService.create(requestDTO);
 
@@ -175,6 +201,7 @@ class UtilisateurServiceTest {
         assertThat(result.getRole()).isEqualTo("FORMATEUR");
         assertThat(result.getStatut()).isEqualTo("Permanent");
         verify(formateurRepository, times(1)).save(any(Formateur.class));
+        verify(roleRepository, times(1)).findByRole("FORMATEUR");
     }
 
     // ──── update ────
@@ -213,11 +240,12 @@ class UtilisateurServiceTest {
     @Test
     void delete_supprime_utilisateur() {
         when(utilisateurRepository.findById("E001")).thenReturn(Optional.of(eleve));
-        doNothing().when(utilisateurRepository).delete(eleve);
+        doNothing().when(utilisateurRepository).delete(eleve); 
 
         utilisateurService.deleteById("E001");
 
-        verify(utilisateurRepository, times(1)).delete(eleve);
+        verify(utilisateurRepository, times(1)).delete(eleve);  
+        verify(utilisateurRepository, never()).save(any(Utilisateur.class)); 
     }
 
     @Test

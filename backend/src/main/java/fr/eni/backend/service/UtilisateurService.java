@@ -26,24 +26,29 @@ public class UtilisateurService {
 
     // ──── Conversion entité → DTO ────
     private UtilisateurDTO toDTO(Utilisateur u) {
+        String roleStr = u.getRoles().stream()
+                .findFirst()
+                .map(Role::getRole)
+                .orElse(null);
+
         UtilisateurDTO.UtilisateurDTOBuilder builder = UtilisateurDTO.builder()
                 .immatriculation(u.getImmatriculation())
                 .nom(u.getNom())
                 .prenom(u.getPrenom())
                 .email(u.getEmail())
                 .telephone(u.getTelephone())
-                .dateCreation(u.getDateCreation());
+                .dateCreation(u.getDateCreation())
+                .role(roleStr);
 
         if (u instanceof Eleve e) {
-            builder.role("ELEVE")
-                   .emailPersonnel(e.getEmailPersonnel())
+            builder.emailPersonnel(e.getEmailPersonnel())
                    .dateInscription(e.getDateInscription());
         } else if (u instanceof Formateur f) {
-            builder.role("FORMATEUR").statut(f.getStatut());
+            builder.statut(f.getStatut());
         } else if (u instanceof ReferenteAdministrative r) {
-            builder.role("REFERENTE").bureau(r.getBureau());
+            builder.bureau(r.getBureau());
         } else if (u instanceof Administrateur a) {
-            builder.role("ADMINISTRATEUR").service(a.getService());
+            builder.service(a.getService());
         }
         return builder.build();
     }
@@ -114,15 +119,13 @@ public class UtilisateurService {
             default -> throw new RuntimeException("Rôle inconnu : " + request.getRole());
         };
 
-        // Ajouter le rôle
-        Role role = Role.builder()
-                .immatriculation(saved.getImmatriculation())
-                .role(request.getRole().toUpperCase())
-                .build();
-        roleRepository.save(role);
-        // saved.getRoles().add(role);
-        // utilisateurRepository.save(saved);  // force la mise à jour de l'entité avec le rôle
-        // return toDTO(utilisateurRepository.findById(saved.getImmatriculation()).orElseThrow());
+        // Associer le rôle existant (ou le créer s'il n'existe pas)
+        Role role = roleRepository.findByRole(request.getRole().toUpperCase())
+                .orElseGet(() -> roleRepository.save(
+                        Role.builder().role(request.getRole().toUpperCase()).build()));
+        saved.getRoles().add(role);
+        utilisateurRepository.save(saved);
+
         return toDTO(saved);
     }
 
@@ -161,6 +164,8 @@ public class UtilisateurService {
     public void deleteById(String immatriculation) {
         Utilisateur u = utilisateurRepository.findById(immatriculation)
                 .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
-        utilisateurRepository.delete(u);  
+        // u.getRoles().clear();
+        // utilisateurRepository.save(u);
+        utilisateurRepository.delete(u);
     }
 }
