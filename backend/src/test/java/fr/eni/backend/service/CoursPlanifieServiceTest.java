@@ -86,7 +86,7 @@ class CoursPlanifieServiceTest {
         requestDTO.setIdCours(1);
         requestDTO.setDateDebut(dateDebut);
         requestDTO.setDateFin(dateFin);
-        requestDTO.setIdFormateur(1);
+        requestDTO.setIdFormateur("F001");
     }
 
     // ============================================================
@@ -153,7 +153,7 @@ class CoursPlanifieServiceTest {
     void create_sauvegarde_cours_planifie() {
         when(promotionRepository.findById(1)).thenReturn(Optional.of(promotion));
         when(coursRepository.findById(1)).thenReturn(Optional.of(cours));
-        when(formateurRepository.findById(1)).thenReturn(Optional.of(formateur));
+        when(formateurRepository.findById("F001")).thenReturn(Optional.of(formateur));
         when(coursPlanifieRepository.save(any(CoursPlanifie.class))).thenReturn(coursPlanifie);
         when(promotionRepository.save(any(Promotion.class))).thenReturn(promotion);
 
@@ -188,7 +188,7 @@ class CoursPlanifieServiceTest {
     void create_lance_exception_si_formateur_introuvable() {
         when(promotionRepository.findById(1)).thenReturn(Optional.of(promotion));
         when(coursRepository.findById(1)).thenReturn(Optional.of(cours));
-        when(formateurRepository.findById(1)).thenReturn(Optional.empty());
+        when(formateurRepository.findById("F001")).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> coursPlanifieService.create(1, requestDTO))
                 .isInstanceOf(RuntimeException.class)

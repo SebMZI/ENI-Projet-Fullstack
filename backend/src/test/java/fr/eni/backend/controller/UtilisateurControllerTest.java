@@ -45,7 +45,7 @@ class UtilisateurControllerTest {
                 .nom("Dupont")
                 .prenom("Jean")
                 .email("jean@campus-eni.fr")
-                .role("ELEVE")
+                .roles(List.of("ELEVE"))
                 .dateCreation(LocalDate.now())
                 .build();
 
@@ -54,7 +54,7 @@ class UtilisateurControllerTest {
         mockMvc.perform(get("/api/utilisateurs"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].immatriculation").value("E001"))
-                .andExpect(jsonPath("$[0].role").value("ELEVE"));
+                .andExpect(jsonPath("$[0].roles[0]").value("ELEVE"));
     }
 
     @Test
@@ -64,7 +64,7 @@ class UtilisateurControllerTest {
                 .nom("Martin")
                 .prenom("Sophie")
                 .email("sophie@campus-eni.fr")
-                .role("FORMATEUR")
+                .roles(List.of("FORMATEUR"))
                 .statut("Permanent")
                 .build();
 
@@ -84,7 +84,7 @@ class UtilisateurControllerTest {
         request.setPrenom("Jean");
         request.setEmail("jean@campus-eni.fr");
         request.setMotDePasse("password123");
-        request.setRole("ELEVE");
+        request.setRoles(List.of("ELEVE"));
         request.setEmailPersonnel("jean@gmail.com");
 
         UtilisateurDTO saved = UtilisateurDTO.builder()
@@ -92,7 +92,7 @@ class UtilisateurControllerTest {
                 .nom("Dupont")
                 .prenom("Jean")
                 .email("jean@campus-eni.fr")
-                .role("ELEVE")
+                .roles(List.of("ELEVE"))
                 .emailPersonnel("jean@gmail.com")
                 .dateCreation(LocalDate.now())
                 .build();
@@ -115,7 +115,7 @@ class UtilisateurControllerTest {
         request.setPrenom("");
         request.setEmail("mauvais-email");
         request.setMotDePasse("");
-        request.setRole("");
+        request.setRoles(List.of(""));
 
         mockMvc.perform(post("/api/utilisateurs")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -131,7 +131,7 @@ class UtilisateurControllerTest {
         request.setPrenom("Sophie");
         request.setEmail("sophie@campus-eni.fr");
         request.setMotDePasse("newPass");
-        request.setRole("FORMATEUR");
+        request.setRoles(List.of("FORMATEUR"));
         request.setStatut("Vacataire");
 
         UtilisateurDTO updated = UtilisateurDTO.builder()
@@ -139,7 +139,7 @@ class UtilisateurControllerTest {
                 .nom("Martin")
                 .prenom("Sophie")
                 .email("sophie@campus-eni.fr")
-                .role("FORMATEUR")
+                .roles(List.of("FORMATEUR"))
                 .statut("Vacataire")
                 .build();
 

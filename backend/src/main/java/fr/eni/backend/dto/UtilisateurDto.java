@@ -16,7 +16,7 @@ public class UtilisateurDTO {
     private String prenom;
     private String email;
     private String telephone;
-    private String role;
+    private List<String> roles;
     private LocalDate dateCreation;
 
     // Spécifiques (null si non concerné)

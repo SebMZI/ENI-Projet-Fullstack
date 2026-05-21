@@ -94,6 +94,30 @@ public class CoursPlanifieService {
         return toDTO(saved);
     }
 
+
+    public CoursPlanifieDTO update(Integer id, CoursPlanifieRequestDTO request) {
+        
+        CoursPlanifie cp = coursPlanifieRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cours planifié introuvable"));
+
+        if (request.getDateFin().isBefore(request.getDateDebut())) {
+            throw new RuntimeException("La date de fin doit être après la date de début");
+        }
+
+        cp.setDateDebut(request.getDateDebut());
+        cp.setDateFin(request.getDateFin());
+
+        if (request.getIdFormateur() != null) {
+            Formateur formateur = formateurRepository.findById(request.getIdFormateur())
+                    .orElseThrow(() -> new RuntimeException("Formateur introuvable"));
+            cp.setFormateur(formateur);
+        } else {
+            cp.setFormateur(null);
+        }
+
+        return toDTO(coursPlanifieRepository.save(cp));
+    }
+
     public void deleteById(Integer id) {
         if (!coursPlanifieRepository.existsById(id)) {
             throw new RuntimeException("Cours planifié introuvable");

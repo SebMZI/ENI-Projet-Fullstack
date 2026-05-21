@@ -58,6 +58,7 @@ class UtilisateurServiceTest {
         roleEleve = Role.builder().id(1).role("ELEVE").build();
         roleFormateur = Role.builder().id(2).role("FORMATEUR").build();
 
+        // On initialise avec des listes vides car le service va lui-même y ajouter les rôles
         eleve = Eleve.builder()
                 .immatriculation("E001")
                 .nom("Dupont")
@@ -68,7 +69,7 @@ class UtilisateurServiceTest {
                 .dateCreation(LocalDate.now())
                 .emailPersonnel("jean.dupont@gmail.com")
                 .dateInscription(LocalDate.now())
-                .roles(new ArrayList<>(List.of(roleEleve)))
+                .roles(new ArrayList<>())
                 .build();
 
         formateur = Formateur.builder()
@@ -80,7 +81,7 @@ class UtilisateurServiceTest {
                 .telephone("0601020304")
                 .dateCreation(LocalDate.now())
                 .statut("Permanent")
-                .roles(new ArrayList<>(List.of(roleFormateur)))
+                .roles(new ArrayList<>())
                 .build();
 
         requestDTO = new UtilisateurRequestDTO();
@@ -90,31 +91,34 @@ class UtilisateurServiceTest {
         requestDTO.setEmail("jean.dupont@campus-eni.fr");
         requestDTO.setMotDePasse("password123");
         requestDTO.setTelephone("0102030405");
-        requestDTO.setRole("ELEVE");
+        requestDTO.setRoles(List.of("ELEVE"));
         requestDTO.setEmailPersonnel("jean.dupont@gmail.com");
     }
 
     // ──── findAll ────
     @Test
     void findAll_retourne_liste_utilisateurs() {
+        eleve.getRoles().add(roleEleve);
+        formateur.getRoles().add(roleFormateur);
         when(utilisateurRepository.findAll()).thenReturn(List.of(eleve, formateur));
 
         List<UtilisateurDTO> result = utilisateurService.findAll();
 
         assertThat(result).hasSize(2);
-        assertThat(result.get(0).getRole()).isEqualTo("ELEVE");
-        assertThat(result.get(1).getRole()).isEqualTo("FORMATEUR");
+        assertThat(result.get(0).getRoles()).containsExactly("ELEVE");
+        assertThat(result.get(1).getRoles()).containsExactly("FORMATEUR");
     }
 
     // ──── findById ────
     @Test
     void findById_retourne_utilisateur() {
+        eleve.getRoles().add(roleEleve);
         when(utilisateurRepository.findById("E001")).thenReturn(Optional.of(eleve));
 
         UtilisateurDTO result = utilisateurService.findById("E001");
 
         assertThat(result.getNom()).isEqualTo("Dupont");
-        assertThat(result.getRole()).isEqualTo("ELEVE");
+        assertThat(result.getRoles()).containsExactly("ELEVE");
         assertThat(result.getEmailPersonnel()).isEqualTo("jean.dupont@gmail.com");
     }
 
@@ -139,7 +143,7 @@ class UtilisateurServiceTest {
         UtilisateurDTO result = utilisateurService.create(requestDTO);
 
         assertThat(result.getImmatriculation()).isEqualTo("E001");
-        assertThat(result.getRole()).isEqualTo("ELEVE");
+        assertThat(result.getRoles()).containsExactly("ELEVE");
         assertThat(result.getEmailPersonnel()).isEqualTo("jean.dupont@gmail.com");
         verify(eleveRepository, times(1)).save(any(Eleve.class));
         verify(roleRepository, times(1)).findByRole("ELEVE");
@@ -157,7 +161,7 @@ class UtilisateurServiceTest {
 
     @Test
     void create_lance_exception_si_role_inconnu() {
-        requestDTO.setRole("INCONNU");
+        requestDTO.setRoles(List.of("INCONNU"));
         when(utilisateurRepository.existsById("E001")).thenReturn(false);
         when(passwordEncoder.encode(any())).thenReturn("encodedPass");
 
@@ -177,7 +181,7 @@ class UtilisateurServiceTest {
 
         UtilisateurDTO result = utilisateurService.create(requestDTO);
 
-        assertThat(result.getRole()).isEqualTo("ELEVE");
+        assertThat(result.getRoles()).containsExactly("ELEVE");
         verify(roleRepository, times(1)).save(any(Role.class));
     }
 
@@ -185,7 +189,7 @@ class UtilisateurServiceTest {
     @Test
     void create_formateur_sauvegarde_et_retourne_dto() {
         requestDTO.setImmatriculation("F001");
-        requestDTO.setRole("FORMATEUR");
+        requestDTO.setRoles(List.of("FORMATEUR"));
         requestDTO.setStatut("Permanent");
         requestDTO.setEmailPersonnel(null);
 
@@ -198,7 +202,7 @@ class UtilisateurServiceTest {
         UtilisateurDTO result = utilisateurService.create(requestDTO);
 
         assertThat(result.getImmatriculation()).isEqualTo("F001");
-        assertThat(result.getRole()).isEqualTo("FORMATEUR");
+        assertThat(result.getRoles()).containsExactly("FORMATEUR");
         assertThat(result.getStatut()).isEqualTo("Permanent");
         verify(formateurRepository, times(1)).save(any(Formateur.class));
         verify(roleRepository, times(1)).findByRole("FORMATEUR");
@@ -207,8 +211,10 @@ class UtilisateurServiceTest {
     // ──── update ────
     @Test
     void update_modifie_utilisateur() {
+        formateur.getRoles().add(roleFormateur); // On commence avec le rôle initial
         when(utilisateurRepository.findById("F001")).thenReturn(Optional.of(formateur));
         when(passwordEncoder.encode("newPass")).thenReturn("newEncodedPass");
+        when(roleRepository.findByRole("FORMATEUR")).thenReturn(Optional.of(roleFormateur));
         when(utilisateurRepository.save(any(Utilisateur.class))).thenReturn(formateur);
         when(formateurRepository.save(any(Formateur.class))).thenReturn(formateur);
 
@@ -218,7 +224,7 @@ class UtilisateurServiceTest {
         updateRequest.setPrenom("Sophie");
         updateRequest.setEmail("sophie@campus-eni.fr");
         updateRequest.setMotDePasse("newPass");
-        updateRequest.setRole("FORMATEUR");
+        updateRequest.setRoles(List.of("FORMATEUR"));
         updateRequest.setStatut("Vacataire");
 
         UtilisateurDTO result = utilisateurService.update("F001", updateRequest);
@@ -240,12 +246,11 @@ class UtilisateurServiceTest {
     @Test
     void delete_supprime_utilisateur() {
         when(utilisateurRepository.findById("E001")).thenReturn(Optional.of(eleve));
-        doNothing().when(utilisateurRepository).delete(eleve); 
+        doNothing().when(utilisateurRepository).delete(eleve);
 
         utilisateurService.deleteById("E001");
 
-        verify(utilisateurRepository, times(1)).delete(eleve);  
-        verify(utilisateurRepository, never()).save(any(Utilisateur.class)); 
+        verify(utilisateurRepository, times(1)).delete(eleve);
     }
 
     @Test

@@ -15,5 +15,5 @@ public class CoursPlanifieRequestDTO {
     @NotNull(message = "La date de fin est obligatoire")
     private LocalDate dateFin;
 
-    private Integer idFormateur;  // Optionnel
+    private String  idFormateur;  // Optionnel
 }

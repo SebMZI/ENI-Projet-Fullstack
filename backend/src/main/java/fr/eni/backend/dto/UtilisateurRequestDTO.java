@@ -2,7 +2,7 @@ package fr.eni.backend.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
-
+import java.util.List;
 @Data
 public class UtilisateurRequestDTO {
 
@@ -26,9 +26,8 @@ public class UtilisateurRequestDTO {
     @Size(max = 10)
     private String telephone;
 
-    @NotBlank(message = "Le rôle est obligatoire")
-    // ELEVE, FORMATEUR, REFERENTE, ADMINISTRATEUR
-    private String role;
+    @NotEmpty(message = "Au moins un rôle est requis")
+    private List<String> roles; // ["ELEVE", "FORMATEUR"]
 
     // Champs spécifiques selon le rôle — optionnels
     private String statut;    // Formateur

@@ -60,8 +60,9 @@ class CursusControllerTest {
     void create_retourne_cursus_cree() throws Exception {
         CursusRequestDTO request = new CursusRequestDTO();
         request.setIntitule("D2WM");
+        request.setIdFiliere(1);
 
-        CursusDTO saved = CursusDTO.builder().id(1).intitule("D2WM").build();
+        CursusDTO saved = CursusDTO.builder().id(1).intitule("D2WM").idFiliere(1).build();
         when(cursusService.create(any(CursusRequestDTO.class))).thenReturn(saved);
 
         mockMvc.perform(post("/api/cursus")
@@ -86,7 +87,7 @@ class CursusControllerTest {
     void update_retourne_cursus_modifie() throws Exception {
         CursusRequestDTO request = new CursusRequestDTO();
         request.setIntitule("CDA Avancé");
-
+        request.setIdFiliere(1);
         CursusDTO updated = CursusDTO.builder().id(1).intitule("CDA Avancé").build();
         when(cursusService.update(eq(1), any(CursusRequestDTO.class))).thenReturn(updated);
 

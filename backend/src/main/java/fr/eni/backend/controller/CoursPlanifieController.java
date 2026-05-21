@@ -27,6 +27,13 @@ public class CoursPlanifieController {
         return ResponseEntity.ok(coursPlanifieService.findById(id));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<CoursPlanifieDTO> update(
+            @PathVariable Integer id,
+            @Valid @RequestBody CoursPlanifieRequestDTO request) {
+        return ResponseEntity.ok(coursPlanifieService.update(id, request));
+    }
+    
     @GetMapping("/promotion/{promotionId}")
     public ResponseEntity<List<CoursPlanifieDTO>> getByPromotion(@PathVariable Integer promotionId) {
         return ResponseEntity.ok(coursPlanifieService.findByPromotion(promotionId));
