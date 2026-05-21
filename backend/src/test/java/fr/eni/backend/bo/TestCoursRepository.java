@@ -1,7 +1,6 @@
 package fr.eni.backend.bo;
 
-import fr.eni.backend.dao.CoursRepositiry;
-import fr.eni.backend.dao.FormateurRepository;
+import fr.eni.backend.dao.CoursRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ public class TestCoursRepository {
     private TestEntityManager testEntityManager;
 
     @Autowired
-    private CoursRepositiry coursRepositiry;
+    private CoursRepository coursRepository;
 
     @Test
     public void testCours_save() {
@@ -29,7 +28,7 @@ public class TestCoursRepository {
                 .duree(2)
                 .build();
 
-        final Cours coursDB = coursRepositiry.save(cours);
+        final Cours coursDB = coursRepository.save(cours);
         assertThat(coursDB.getId()).isGreaterThan(0);
     }
 
@@ -44,7 +43,7 @@ public class TestCoursRepository {
         final Cours coursDB = testEntityManager.persist(cours);
         testEntityManager.flush();
 
-        coursRepositiry.delete(cours);
+        coursRepository.delete(cours);
 
         final Cours coursDB2 = testEntityManager.find(CoursPlanifie.class, cours.getId());
         assertNull(coursDB2);

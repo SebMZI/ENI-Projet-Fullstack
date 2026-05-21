@@ -1,6 +1,5 @@
 package fr.eni.backend.bo;
 
-import fr.eni.backend.bo.key.RolePK;
 import fr.eni.backend.dao.AdresseRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

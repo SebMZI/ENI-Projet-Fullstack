@@ -41,8 +41,15 @@ public class TestAuth {
 
     @BeforeEach
     void createUser() {
-        roleRepository.deleteAll();
         utilisateurRepository.deleteAll();
+        roleRepository.deleteAll();
+
+
+        Role roleReferent = Role.builder()
+                .role("ROLE_REFERENT")
+                .build();
+
+        roleRepository.saveAndFlush(roleReferent);
 
         String mdpEncoded = pEncoder.encode("JeSuisAnneLise");
 
@@ -55,14 +62,9 @@ public class TestAuth {
                 .telephone("0600000000")
                 .build();
 
+        annelise.getRoles().add(roleReferent);
+
         utilisateurRepository.saveAndFlush(annelise);
-
-        Role roleAdmin = Role.builder()
-                .immatriculation("ENI_25039285")
-                .role("ROLE_ADMIN")
-                .build();
-
-        roleRepository.saveAndFlush(roleAdmin);
 
         Utilisateur saved = utilisateurRepository.findUtilisateurByEmail("abaille@campus-eni.fr");
         assertThat(saved).isNotNull();
@@ -120,7 +122,7 @@ public class TestAuth {
                 .andExpect(jsonPath("$.utilisateur.prenom").value("Anne-Lise"))
                 .andExpect(jsonPath("$.utilisateur.nom").value("BAILLE"))
                 .andExpect(jsonPath("$.utilisateur.roles").isArray())
-                .andExpect(jsonPath("$.utilisateur.roles[0]").value("ROLE_ADMIN"))
+                .andExpect(jsonPath("$.utilisateur.roles[0]").value("ROLE_REFERENT"))
                 .andExpect(jsonPath("$.token").isNotEmpty());
     }
 

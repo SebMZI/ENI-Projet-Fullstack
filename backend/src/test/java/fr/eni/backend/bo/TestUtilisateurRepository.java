@@ -1,5 +1,6 @@
 package fr.eni.backend.bo;
 
+import fr.eni.backend.dao.RoleRepository;
 import fr.eni.backend.dao.UtilisateurRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +26,8 @@ public class TestUtilisateurRepository {
 
     @Autowired
     private UtilisateurRepository utilisateurRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
     private List<Role> rolesListe;
     private Adresse adresse;
@@ -39,6 +42,7 @@ public class TestUtilisateurRepository {
                     .builder()
                     .role("ROLE_" + i)
                     .build();
+            roleRepository.save(role);
             rolesListe.add(role);
         }
 

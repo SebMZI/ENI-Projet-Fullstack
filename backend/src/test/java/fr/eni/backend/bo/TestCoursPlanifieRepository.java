@@ -1,7 +1,6 @@
 package fr.eni.backend.bo;
 
-
-import fr.eni.backend.dao.CoursPlanifiesRepository;
+import fr.eni.backend.dao.CoursPlanifieRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -22,7 +20,7 @@ public class TestCoursPlanifieRepository {
     TestEntityManager testEntityManager;
 
     @Autowired
-    CoursPlanifiesRepository coursPlanifiesRepository;
+    CoursPlanifieRepository coursPlanifiesRepository;
 
     private CoursPlanifie coursPlanifie;
 
