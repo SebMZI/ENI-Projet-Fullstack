@@ -1,7 +1,6 @@
 package fr.eni.backend.bo;
 
-import fr.eni.backend.dao.CoursRepositiry;
-import fr.eni.backend.dao.FormateurRepository;
+import fr.eni.backend.dao.CoursRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ public class TestCoursRepository {
     private TestEntityManager testEntityManager;
 
     @Autowired
-    private CoursRepositiry coursRepositiry;
+    private CoursRepository coursRepositiry;
 
     @Test
     public void testCours_save() {

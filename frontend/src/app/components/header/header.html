@@ -1,0 +1,31 @@
+<header>
+    <div class="navbar">
+        <div class="logo">
+            <img alt="username">
+            <span>{{ userName }}</span>
+        </div>
+        <div class="navbar-links">
+            <nav>
+                <ul>
+                    @if(isLogged()) {
+
+                        @if(userRoles.includes("ROLE_REFERENTE") || userRoles.includes("ROLE_FORMATEUR")) {
+                            <li><a [routerLink]="['/filieres']">Filières</a></li>
+                            <li><a [routerLink]="['/cursus']">Cursus</a></li>
+                            <li><a [routerLink]="['/promotions']">Promotions</a></li>
+                            <li><a [routerLink]="['/eleves']">Elèves</a></li>
+                        }
+
+                        @if(userRoles.includes("ROLE_FORMATEUR")) {
+                            <li><a [routerLink]="['/promotions']">Utilisateurs</a></li>
+                        }
+                        <li><button class="btn-annuler" (click)="logout()">Se déconnecter</button></li>
+
+                    } @else {
+                        <li><a class="btn-primary" [routerLink]="['/connexion']">Se connecter</a></li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>

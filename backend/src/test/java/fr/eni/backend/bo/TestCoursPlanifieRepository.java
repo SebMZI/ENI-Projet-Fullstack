@@ -1,7 +1,7 @@
 package fr.eni.backend.bo;
 
 
-import fr.eni.backend.dao.CoursPlanifiesRepository;
+import fr.eni.backend.dao.CoursPlanifieRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ public class TestCoursPlanifieRepository {
     TestEntityManager testEntityManager;
 
     @Autowired
-    CoursPlanifiesRepository coursPlanifiesRepository;
+    CoursPlanifieRepository coursPlanifiesRepository;
 
     private CoursPlanifie coursPlanifie;
 

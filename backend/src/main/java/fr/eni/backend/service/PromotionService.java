@@ -52,6 +52,13 @@ public class PromotionService {
         return toDTO(promotion);
     }
 
+    public List<PromotionDTO> findByFormateur(String immatriculation) {
+        return promotionRepository.findPromotionsByFormateur(immatriculation)
+                .stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
     public PromotionDTO create(PromotionRequestDTO request) {
     
         if (request.getDateDebut().isBefore(LocalDate.now())) {

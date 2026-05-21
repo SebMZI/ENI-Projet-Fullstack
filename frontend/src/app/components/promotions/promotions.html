@@ -1,0 +1,23 @@
+<h1>Mes promotions</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>Identifiant</th>
+        <th>Date de début</th>
+        <th>Date de fin</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+        @for (promotion of promotions; track promotion.id) {
+            <tr>
+                <td>{{ promotion.nom }}</td>
+                <td>{{ promotion.dateDebut }}</td>
+                <td>{{ promotion.dateFin }}</td>
+                <td><a class="btn-primary">Détails</a></td>
+            </tr>
+        }
+    <tr></tr>
+    </tbody>
+</table>
