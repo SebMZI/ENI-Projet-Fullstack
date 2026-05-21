@@ -26,10 +26,9 @@ public class UtilisateurService {
 
     // ──── Conversion entité → DTO ────
     private UtilisateurDTO toDTO(Utilisateur u) {
-        String roleStr = u.getRoles().stream()
-                .findFirst()
+        List<String> rolesList = u.getRoles().stream()
                 .map(Role::getRole)
-                .orElse(null);
+                .toList();
 
         UtilisateurDTO.UtilisateurDTOBuilder builder = UtilisateurDTO.builder()
                 .immatriculation(u.getImmatriculation())
@@ -38,7 +37,7 @@ public class UtilisateurService {
                 .email(u.getEmail())
                 .telephone(u.getTelephone())
                 .dateCreation(u.getDateCreation())
-                .role(roleStr);
+                .roles(rolesList);
 
         if (u instanceof Eleve e) {
             builder.emailPersonnel(e.getEmailPersonnel())
@@ -72,9 +71,10 @@ public class UtilisateurService {
 
         String motDePasseEncode = passwordEncoder.encode(request.getMotDePasse());
         LocalDate aujourdHui = LocalDate.now();
+        String rolePrincipal = request.getRoles().get(0).toUpperCase();
 
-        // Sauvegarder directement l'entité spécifique (la table mère USERS sera remplie automatiquement)
-        Utilisateur saved = switch (request.getRole().toUpperCase()) {
+        // Sauvegarder directement l'entité spécifique
+        Utilisateur saved = switch (rolePrincipal) {
             case "ELEVE" -> {
                 Eleve e = Eleve.builder()
                         .immatriculation(request.getImmatriculation())
@@ -116,14 +116,16 @@ public class UtilisateurService {
                         .build();
                 yield administrateurRepository.save(a);
             }
-            default -> throw new RuntimeException("Rôle inconnu : " + request.getRole());
+            default -> throw new RuntimeException("Rôle inconnu : " + rolePrincipal);
         };
 
-        // Associer le rôle existant (ou le créer s'il n'existe pas)
-        Role role = roleRepository.findByRole(request.getRole().toUpperCase())
-                .orElseGet(() -> roleRepository.save(
-                        Role.builder().role(request.getRole().toUpperCase()).build()));
-        saved.getRoles().add(role);
+        // Associer tous les rôles
+        for (String roleStr : request.getRoles()) {
+            Role role = roleRepository.findByRole(roleStr.toUpperCase())
+                    .orElseGet(() -> roleRepository.save(
+                            Role.builder().role(roleStr.toUpperCase()).build()));
+            saved.getRoles().add(role);
+        }
         utilisateurRepository.save(saved);
 
         return toDTO(saved);
@@ -140,6 +142,17 @@ public class UtilisateurService {
         u.setTelephone(request.getTelephone());
         if (request.getMotDePasse() != null && !request.getMotDePasse().isBlank()) {
             u.setMotDePasse(passwordEncoder.encode(request.getMotDePasse()));
+        }
+
+        // Mise à jour des rôles (si fournis)
+        if (request.getRoles() != null && !request.getRoles().isEmpty()) {
+            u.getRoles().clear();
+            for (String roleStr : request.getRoles()) {
+                Role role = roleRepository.findByRole(roleStr.toUpperCase())
+                        .orElseGet(() -> roleRepository.save(
+                                Role.builder().role(roleStr.toUpperCase()).build()));
+                u.getRoles().add(role);
+            }
         }
         utilisateurRepository.save(u);
 
@@ -164,8 +177,6 @@ public class UtilisateurService {
     public void deleteById(String immatriculation) {
         Utilisateur u = utilisateurRepository.findById(immatriculation)
                 .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
-        // u.getRoles().clear();
-        // utilisateurRepository.save(u);
         utilisateurRepository.delete(u);
     }
 }

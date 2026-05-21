@@ -28,6 +28,9 @@ public class Cursus {
     @Column(name = "CURSUS_NAME", nullable = false, length = 250)
     private String intitule;
 
+    @Column(name = "FIELD_ID")
+    private Integer fieldId;
+
     @NotNull
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "CURSUS_ID")

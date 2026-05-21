@@ -8,6 +8,7 @@ import lombok.*;
 @Builder
 public class CoursDTO {
     private Integer id;
-    private String titre;   
+    private String titre;
     private Integer duree;
+    private Integer idCursus;
 }

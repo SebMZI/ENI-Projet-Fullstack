@@ -32,4 +32,8 @@ public class Cours {
     //  @NotBlank
     @Column(name = "COURSE_DURATION", nullable = false)
     private Integer duree;
+
+
+    @Column(name = "CURSUS_ID")
+    private Integer cursusId;
 }

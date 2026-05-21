@@ -19,6 +19,7 @@ public class CoursService {
                 .id(cours.getId())
                 .titre(cours.getTitre())
                 .duree(cours.getDuree())
+                .idCursus(cours.getCursusId())
                 .build();
     }
 
@@ -39,6 +40,7 @@ public class CoursService {
         Cours cours = Cours.builder()
                 .titre(request.getTitre())
                 .duree(request.getDuree())
+                .cursusId(request.getIdCursus())
                 .build();
         return toDTO(coursRepository.save(cours));
     }
@@ -48,6 +50,7 @@ public class CoursService {
                 .orElseThrow(() -> new RuntimeException("Cours introuvable"));
         existing.setTitre(request.getTitre());
         existing.setDuree(request.getDuree());
+        existing.setCursusId(request.getIdCursus());
         return toDTO(coursRepository.save(existing));
     }
 

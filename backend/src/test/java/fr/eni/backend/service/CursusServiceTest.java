@@ -1,7 +1,9 @@
 package fr.eni.backend.service;
 
 import fr.eni.backend.bo.Cursus;
+import fr.eni.backend.bo.Filiere;
 import fr.eni.backend.dao.CursusRepository;
+import fr.eni.backend.dao.FiliereRepository;
 import fr.eni.backend.dto.CursusDTO;
 import fr.eni.backend.dto.CursusRequestDTO;
 import org.junit.jupiter.api.Test;
@@ -21,6 +23,9 @@ class CursusServiceTest {
 
     @Mock
     private CursusRepository cursusRepository;
+
+    @Mock
+    private FiliereRepository filiereRepository;
 
     @InjectMocks
     private CursusService cursusService;
@@ -57,10 +62,14 @@ class CursusServiceTest {
 
     @Test
     void create_sauvegarde_cursus() {
+        Filiere filiere = Filiere.builder().id(1).nom("Développement").build();
+        when(filiereRepository.findById(1)).thenReturn(Optional.of(filiere));
+
         CursusRequestDTO request = new CursusRequestDTO();
         request.setIntitule("D2WM");
+        request.setIdFiliere(1);
 
-        Cursus saved = Cursus.builder().id(1).intitule("D2WM").build();
+        Cursus saved = Cursus.builder().id(1).intitule("D2WM").fieldId(1).build();
         when(cursusRepository.save(any(Cursus.class))).thenReturn(saved);
 
         CursusDTO result = cursusService.create(request);

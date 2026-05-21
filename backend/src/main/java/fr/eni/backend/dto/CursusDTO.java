@@ -9,4 +9,5 @@ import lombok.*;
 public class CursusDTO {
     private Integer id;
     private String intitule;
+    private Integer idFiliere;
 }

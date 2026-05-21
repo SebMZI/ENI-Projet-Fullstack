@@ -1,5 +1,5 @@
 package fr.eni.backend.controller;
-
+import fr.eni.backend.dto.CoursDTO;
 import fr.eni.backend.dto.CursusDTO;
 import fr.eni.backend.dto.CursusRequestDTO;
 import fr.eni.backend.service.CursusService;
@@ -25,6 +25,11 @@ public class CursusController {
     @GetMapping("/{id}")
     public ResponseEntity<CursusDTO> getById(@PathVariable Integer id) {
         return ResponseEntity.ok(cursusService.findById(id));
+    }
+
+    @GetMapping("/{id}/cours")
+    public ResponseEntity<List<CoursDTO>> getCoursByCursus(@PathVariable Integer id) {
+        return ResponseEntity.ok(cursusService.findCoursByCursus(id));
     }
 
     @PostMapping

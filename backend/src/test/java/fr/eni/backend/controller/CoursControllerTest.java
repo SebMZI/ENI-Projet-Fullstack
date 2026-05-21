@@ -64,8 +64,9 @@ class CoursControllerTest {
         CoursRequestDTO request = new CoursRequestDTO();
         request.setTitre("React");
         request.setDuree(30);
+        request.setIdCursus(1);
 
-        CoursDTO saved = CoursDTO.builder().id(1).titre("React").duree(30).build();
+        CoursDTO saved = CoursDTO.builder().id(1).titre("React").duree(30).idCursus(1).build();
         when(coursService.create(any(CoursRequestDTO.class))).thenReturn(saved);
 
         mockMvc.perform(post("/api/cours")
@@ -93,7 +94,8 @@ class CoursControllerTest {
         CoursRequestDTO request = new CoursRequestDTO();
         request.setTitre("React Avancé");
         request.setDuree(45);
-
+        request.setIdCursus(1);
+        
         CoursDTO updated = CoursDTO.builder().id(1).titre("React Avancé").duree(45).build();
         when(coursService.update(eq(1), any(CoursRequestDTO.class))).thenReturn(updated);
 
