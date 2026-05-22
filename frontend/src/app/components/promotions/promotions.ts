@@ -1,12 +1,12 @@
 import { Component, Inject } from '@angular/core';
 import { Promotion } from '../../interfaces/promotion';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PromotionsService } from '../../services/promotions';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 
 @Component({
     selector: 'app-promotions',
-    imports: [],
+    imports: [RouterLink],
     templateUrl: './promotions.html',
     styleUrl: './promotions.css',
 })
@@ -22,14 +22,13 @@ export class Promotions {
     ) {}
 
     ngOnInit() {
-
-        if(!this.isLogged()) {
+        if (!this.isLogged()) {
             this.router.navigate(['/connexion']);
         }
 
         if (this.route.snapshot.paramMap.get('immatriculation')) {
-            this.getFormateurPromotions();
             this.immatriculation = this.route.snapshot.paramMap.get('immatriculation');
+            this.getFormateurPromotions();
         } else {
             this.getAllPromotions();
         }

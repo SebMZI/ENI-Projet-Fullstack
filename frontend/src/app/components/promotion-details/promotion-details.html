@@ -1,1 +1,23 @@
-<p>promotion-details works!</p>
+<h1>Elèves</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Date d'inscription</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+        @for (eleve of eleves; track eleve.immatriculation) {
+            <tr>
+                <td>{{ eleve.nom }}</td>
+                <td>{{ eleve.prenom }}</td>
+                <td>{{ eleve.dateInscription }}</td>
+                <td><a class="btn-primary">Détails</a></td>
+            </tr>
+        }
+    <tr></tr>
+    </tbody>
+</table>

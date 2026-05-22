@@ -15,7 +15,7 @@
                 <td>{{ promotion.nom }}</td>
                 <td>{{ promotion.dateDebut }}</td>
                 <td>{{ promotion.dateFin }}</td>
-                <td><a class="btn-primary">Détails</a></td>
+                <td><a class="btn-primary" [routerLink]="['/promotions/' + promotion.id + '/details']">Détails</a></td>
             </tr>
         }
     <tr></tr>

@@ -64,6 +64,13 @@ public class UtilisateurService {
         return toDTO(u);
     }
 
+    public List<UtilisateurDTO> findElevesByPromotion(Integer idPromotion){
+        return eleveRepository.findElevesByPromotion(idPromotion)
+                .stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
     @Transactional
     public UtilisateurDTO create(UtilisateurRequestDTO request) {
         if (utilisateurRepository.existsById(request.getImmatriculation())) {

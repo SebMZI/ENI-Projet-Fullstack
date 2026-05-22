@@ -30,6 +30,11 @@ public class UtilisateurController {
         return ResponseEntity.ok(utilisateurService.findById(immatriculation));
     }
 
+    @GetMapping("/promotions/{id}/eleves")
+    public ResponseEntity<List<UtilisateurDTO> > getElevesByPromotions(@PathVariable Integer id) {
+        return ResponseEntity.ok(utilisateurService.findElevesByPromotion(id));
+    }
+
     // POST /api/utilisateurs
     @PostMapping
     public ResponseEntity<UtilisateurDTO> create(@Valid @RequestBody UtilisateurRequestDTO request) {

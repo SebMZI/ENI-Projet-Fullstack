@@ -9,16 +9,21 @@
                 <ul>
                     @if(isLogged()) {
 
-                        @if(userRoles.includes("ROLE_REFERENTE") || userRoles.includes("ROLE_FORMATEUR")) {
+                        @if(userRoles.includes("ROLE_FORMATEUR")) {
+                            <li><a [routerLink]="['/promotions/formateurs', userRegistration]">Promotions</a></li>
+                        }
+
+                        @if(userRoles.includes("ROLE_REFERENTE") || userRoles.includes("ROLE_ADMINISTRATEUR")) {
                             <li><a [routerLink]="['/filieres']">Filières</a></li>
                             <li><a [routerLink]="['/cursus']">Cursus</a></li>
                             <li><a [routerLink]="['/promotions']">Promotions</a></li>
                             <li><a [routerLink]="['/eleves']">Elèves</a></li>
                         }
 
-                        @if(userRoles.includes("ROLE_FORMATEUR")) {
-                            <li><a [routerLink]="['/promotions']">Utilisateurs</a></li>
+                        @if(userRoles.includes("ROLE_ELEVE")) {
+                            <li><a href="">Mes cours</a></li>
                         }
+
                         <li><button class="btn-annuler" (click)="logout()">Se déconnecter</button></li>
 
                     } @else {

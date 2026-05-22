@@ -30,7 +30,7 @@ public class PromotionController {
         return ResponseEntity.ok(promotionService.findById(id));
     }
 
-    @GetMapping("/formateurs/{immatriculation}")
+    @GetMapping("/formateurs/{immatriculation}/promotions")
     public ResponseEntity<List<PromotionDTO>> getByFormateur(@PathVariable String immatriculation) {
         return ResponseEntity.ok(promotionService.findByFormateur(immatriculation));
     }
