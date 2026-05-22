@@ -26,9 +26,9 @@ public class UtilisateurService {
 
     // ──── Conversion entité → DTO ────
     private UtilisateurDTO toDTO(Utilisateur u) {
-        List<String> rolesList = u.getRoles().stream()
-                .map(Role::getRole)
-                .toList();
+            String[] rolesArray = u.getRoles().stream()
+            .map(Role::getRole)
+            .toArray(String[]::new);
 
         UtilisateurDTO.UtilisateurDTOBuilder builder = UtilisateurDTO.builder()
                 .immatriculation(u.getImmatriculation())
@@ -37,7 +37,7 @@ public class UtilisateurService {
                 .email(u.getEmail())
                 .telephone(u.getTelephone())
                 .dateCreation(u.getDateCreation())
-                .roles(rolesList);
+                .roles(rolesArray);
 
         if (u instanceof Eleve e) {
             builder.emailPersonnel(e.getEmailPersonnel())
