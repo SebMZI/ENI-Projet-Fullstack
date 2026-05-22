@@ -30,6 +30,11 @@ public class PromotionController {
         return ResponseEntity.ok(promotionService.findById(id));
     }
 
+    @GetMapping("/eleves/{immatriculation}/promotions")
+    public ResponseEntity<List<PromotionDTO>> getPromotionsByEleve(@PathVariable String immatriculation) {
+        return ResponseEntity.ok(promotionService.findPromotionsByEleve(immatriculation));
+    }
+    
     @PostMapping
     public ResponseEntity<PromotionDTO> create(@Valid @RequestBody PromotionRequestDTO request) {
         return ResponseEntity.ok(promotionService.create(request));

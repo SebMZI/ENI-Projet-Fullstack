@@ -16,4 +16,5 @@ public class CoursPlanifieDTO {
     private String idFormateur;  // ← String (car immatriculation est un String)
     private String nomFormateur;
     private Integer idPromotion;
+    private Integer ordre;
 }

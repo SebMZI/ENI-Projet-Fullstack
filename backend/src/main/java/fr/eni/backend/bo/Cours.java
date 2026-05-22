@@ -34,6 +34,9 @@ public class Cours {
     private Integer duree;
 
 
+    @Column(name = "COURSE_ORDER")
+    private Integer ordre;
+
     @Column(name = "CURSUS_ID")
     private Integer cursusId;
 }

@@ -20,11 +20,12 @@ public class CoursService {
                 .titre(cours.getTitre())
                 .duree(cours.getDuree())
                 .idCursus(cours.getCursusId())
+                .ordre(cours.getOrdre())
                 .build();
     }
 
     public List<CoursDTO> findAll() {
-        return coursRepository.findAll()
+        return coursRepository.findAllCatalogueOnly()
                 .stream()
                 .map(this::toDTO)
                 .toList();
@@ -41,6 +42,7 @@ public class CoursService {
                 .titre(request.getTitre())
                 .duree(request.getDuree())
                 .cursusId(request.getIdCursus())
+                .ordre(request.getOrdre())
                 .build();
         return toDTO(coursRepository.save(cours));
     }
@@ -51,6 +53,7 @@ public class CoursService {
         existing.setTitre(request.getTitre());
         existing.setDuree(request.getDuree());
         existing.setCursusId(request.getIdCursus());
+        existing.setOrdre(request.getOrdre());
         return toDTO(coursRepository.save(existing));
     }
 

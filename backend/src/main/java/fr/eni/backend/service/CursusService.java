@@ -47,6 +47,7 @@ public class CursusService {
                         .titre(c.getTitre())
                         .duree(c.getDuree())
                         .idCursus(cursusId)
+                        .ordre(c.getOrdre())
                         .build())
                 .toList();
     }

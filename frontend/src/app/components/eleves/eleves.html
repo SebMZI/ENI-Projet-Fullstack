@@ -1,0 +1,121 @@
+<app-navbar-referent></app-navbar-referent>
+
+<div class="page">
+  <div class="page-header">
+    <h1>Élèves</h1>
+  </div>
+
+  @if (erreur()) {
+    <p class="erreur">{{ erreur() }}</p>
+  }
+
+  <table>
+    <thead>
+      <tr>
+        <th>Immatriculation</th>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Email</th>
+        <th>Promotion</th>
+        <th>Cours à l'unité</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (e of eleves(); track e.immatriculation) {
+        <tr>
+          <td>{{ e.immatriculation }}</td>
+          <td>{{ e.nom }}</td>
+          <td>{{ e.prenom }}</td>
+          <td>{{ e.email }}</td>
+          <td>{{ getNomPromo(e.immatriculation) }}</td>
+          <td>
+            @if (getNbCoursUnite(e.immatriculation) > 0) {
+              <a class="lien-cours" (click)="ouvrirModalListeCours(e.immatriculation, e.prenom + ' ' + e.nom)">
+                {{ getNbCoursUnite(e.immatriculation) }} cours
+              </a>
+            } @else {
+              Aucun
+            }
+          </td>
+          <td class="actions-cell">
+            <button [class]="getPromosOfEleve(e.immatriculation).length > 0 ? 'btn-modifier' : 'btn-primary'" (click)="ouvrirModalPromo(e)">
+              Promo
+            </button>
+            <button class="btn-cours" (click)="ouvrirModalCours(e)">Cours</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal Promotion -->
+@if (showModalPromo()) {
+  <div class="overlay" (click)="fermerModalPromo()"></div>
+  <div class="modal">
+    <h3>Inscrire {{ selectedEleveNom }} à une promotion</h3>
+    @if (message()) { <p class="message">{{ message() }}</p> }
+    <div class="field">
+      <label>Promotion</label>
+      <select [(ngModel)]="selectedIdPromotion">
+        <option [ngValue]="null">-- Choisir une promotion --</option>
+        @for (p of promotions(); track p.id) {
+          <option [ngValue]="p.id">{{ p.nom }} ({{ p.dateDebut }} → {{ p.dateFin }})</option>
+        }
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-annuler" (click)="fermerModalPromo()">Annuler</button>
+      <button class="btn-primary" (click)="inscrirePromo()">Inscrire</button>
+    </div>
+  </div>
+}
+
+<!-- Modal Cours à l'unité -->
+@if (showModalCours()) {
+  <div class="overlay" (click)="fermerModalCours()"></div>
+  <div class="modal">
+    <h3>Inscrire {{ selectedEleveNom }} à un cours</h3>
+    @if (message()) { <p class="message">{{ message() }}</p> }
+    <div class="field">
+      <label>Cours planifié</label>
+      <select [(ngModel)]="selectedIdCoursPlanifie">
+        <option [ngValue]="null">-- Choisir un cours --</option>
+        @for (cp of coursPlanifies(); track cp.id) {
+          <option [ngValue]="cp.id">{{ cp.titre }} (ordre {{ cp.ordre }}) — {{ cp.dateDebut }} ({{ cp.duree }}h)</option>
+        }
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-annuler" (click)="fermerModalCours()">Annuler</button>
+      <button class="btn-primary" (click)="inscrireCours()">Inscrire</button>
+      <button class="btn-forcer" (click)="inscrireCoursForcee()">Forcer</button>
+    </div>
+  </div>
+}
+
+<!-- Modal Liste des cours à l'unité -->
+@if (showModalListeCours()) {
+  <div class="overlay" (click)="fermerModalListeCours()"></div>
+  <div class="modal">
+    <h3>Cours à l'unité — {{ eleveListeCours }}</h3>
+    <table class="mini-table">
+      <thead>
+        <tr><th>Cours</th><th>Date inscription</th><th>Forcé</th></tr>
+      </thead>
+      <tbody>
+        @for (ins of coursUniteList; track ins.id) {
+          <tr>
+            <td>{{ ins.titreCours }}</td>
+            <td>{{ ins.dateInscription }}</td>
+            <td>{{ ins.forcee ? 'Oui' : 'Non' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    <div class="modal-actions">
+      <button class="btn-annuler" (click)="fermerModalListeCours()">Fermer</button>
+    </div>
+  </div>
+}

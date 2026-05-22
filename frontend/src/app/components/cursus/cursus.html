@@ -1,0 +1,69 @@
+<app-navbar-referent></app-navbar-referent>
+
+<div class="page">
+  <div class="page-header">
+    <h1>Cursus @if (filiereId) { — {{ getNomFiliere(filiereId) }} }</h1>
+    <div class="header-actions">
+      @if (filiereId) {
+        <button class="btn-retour" routerLink="/cursus">← Tous les cursus</button>
+      }
+      <button class="btn-primary" (click)="ouvrirModal()">Ajouter</button>
+    </div>
+  </div>
+
+  @if (erreur()) {
+    <p class="erreur">{{ erreur() }}</p>
+  }
+
+  <table>
+    <thead>
+      <tr>
+        <th>Intitulé</th>
+        <th>Filière</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (c of cursusList(); track c.id) {
+        <tr>
+          <td>
+            <a [routerLink]="['/cours']" [queryParams]="{cursusId: c.id}" class="lien-cursus">
+              {{ c.intitule }}
+            </a>
+          </td>
+          <td>{{ getNomFiliere(c.idFiliere) }}</td>
+          <td class="actions-cell">
+            <button class="btn-modifier" (click)="ouvrirModal(c)">Modifier</button>
+            <button class="btn-supprimer" (click)="supprimer(c.id)">Supprimer</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+@if (showModal()) {
+  <div class="overlay" (click)="fermerModal()"></div>
+  <div class="modal">
+    <h3>{{ modeEdition() ? 'Modifier' : 'Ajouter' }} un cursus</h3>
+    <div class="field">
+      <label>Intitulé</label>
+      <input type="text" [value]="intitule()" (input)="intitule.set($any($event.target).value)" placeholder="Ex: CDA" />
+    </div>
+    <div class="field">
+      <label>Filière</label>
+      <select [(ngModel)]="selectedIdFiliere">
+        <option [ngValue]="null">-- Choisir --</option>
+        @for (f of filieres(); track f.id) {
+          <option [ngValue]="f.id">{{ f.nom }}</option>
+        }
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-annuler" (click)="fermerModal()">Annuler</button>
+      <button class="btn-primary" (click)="sauvegarder()">
+        {{ modeEdition() ? 'Modifier' : 'Ajouter' }}
+      </button>
+    </div>
+  </div>
+}
