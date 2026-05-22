@@ -24,12 +24,11 @@ public class Cours {
 
     @NotNull
     @NotBlank
-    @Size(max=255)
+    @Size(max=250)
     @Column(name = "COURSE_TITLE", nullable = false, length = 250)
     private String titre;
 
     @NotNull
-    //  @NotBlank
     @Column(name = "COURSE_DURATION", nullable = false)
     private Integer duree;
 

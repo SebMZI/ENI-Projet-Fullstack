@@ -1,0 +1,34 @@
+<div class="utilisateurs-content">
+  <header class="utilisateurs-header">
+    <h1>Utilisateurs</h1>
+    <button class="btn-primary" [routerLink]="['/utilisateurs/ajouter']" ]>Ajouter</button>
+  </header>
+ <table>
+   <thead>
+      <tr>
+        <td>Immatriculation</td>
+        <td>Nom</td>
+        <td>Prénom</td>
+        <td>Email</td>
+        <td>Action</td>
+      </tr>
+   </thead>
+   <tbody>
+   @if(utilisateurs() && utilisateurs().length > 0) {
+     @for (utilisateur of utilisateurs(); track utilisateur.immatriculation) {
+       <tr class="row-cell">
+         <td>{{ utilisateur.immatriculation }}</td>
+         <td>{{ utilisateur.nom }}</td>
+         <td>{{ utilisateur.prenom }}</td>
+         <td>{{ utilisateur.email }}</td>
+         <td class="actions-cell">
+           <button class="btn-modifier" [routerLink]="['/utilisateurs', utilisateur.immatriculation]">Modifier</button>
+           <button class="btn-supprimer">Supprimer</button>
+         </td>
+       </tr>
+     }
+   }
+   </tbody>
+ </table>
+</div>
+

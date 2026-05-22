@@ -1,0 +1,6 @@
+<div class="modifier-content">
+  <div class="modifier-content-header">
+    <h1>Utilisateur: {{ utilisateur().immatriculation}}</h1>
+  </div>
+  <app-utilisateur-form [utilisateur]="utilisateur()" (newUser)="onNewUser($event)" [errorMsg]="errorMsg"></app-utilisateur-form>
+</div>

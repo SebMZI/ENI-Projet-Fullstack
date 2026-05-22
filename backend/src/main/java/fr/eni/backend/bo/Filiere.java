@@ -24,10 +24,10 @@ public class Filiere {
     @NonNull
     @NotBlank
     @Size(max = 100)
-    @Column(name = "FIELD_NAME")
+    @Column(name = "FIELD_NAME", length = 100)
     private String nom;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "FIELD_ID")
     private @Builder.Default List<Cursus> cursus = new ArrayList<>();
 }

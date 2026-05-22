@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Authenticate } from '../../dto/authenticate';
+import { AuthRequest } from '../../interfaces/authRequest';
 import { HttpClient } from '@angular/common/http';
 import {environment} from '../../../environments/environment';
 import { Utilisateur } from '../../interfaces/utilisateur';
@@ -14,7 +14,7 @@ export class AuthenticationService {
   user$ = this.userSubject.asObservable();
   private http = inject(HttpClient);
 
-  public authenticate(credentials: Authenticate): Observable<AuthResponse> {
+  public authenticate(credentials: AuthRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${environment.apiUrl}/auth`, credentials, {
       headers: {
         'Content-Type': 'application/json',

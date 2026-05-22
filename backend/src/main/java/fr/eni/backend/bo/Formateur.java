@@ -21,7 +21,7 @@ import lombok.experimental.SuperBuilder;
 //@DiscriminatorValue(value = "F")
 public class Formateur extends Utilisateur{
 
-    @Size(max = 50)
+    @Size(max = 100)
     @Column(name = "TEACHER_STATUS", length = 100)
     private String statut;
 }

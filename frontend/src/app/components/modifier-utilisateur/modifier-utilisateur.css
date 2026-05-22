@@ -1,0 +1,18 @@
+.modifier-content{
+  padding: 24px;
+  font-family: Arial, sans-serif;
+}
+
+.modifier-content-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+
+.modifier-content-header h1 {
+  font-size: 22px;
+  margin: 0;
+}

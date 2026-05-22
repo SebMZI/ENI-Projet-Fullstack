@@ -5,6 +5,7 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -24,10 +25,12 @@ import java.time.LocalDate;
 public class Eleve extends Utilisateur {
 
     @Email
+    @Size(max = 150)
     @Column(name = "PERSONNAL_EMAIL", length = 150)
     private String emailPersonnel;
 
-    @Column(name = "STUDENT_SUBSCRIPTION_DATE", length = 100)
+
+    @Column(name = "STUDENT_SUBSCRIPTION_DATE")
     private LocalDate dateInscription;
 
 }
