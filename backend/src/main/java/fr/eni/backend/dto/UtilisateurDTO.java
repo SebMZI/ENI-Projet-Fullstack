@@ -1,6 +1,5 @@
 package fr.eni.backend.dto;
 
-import fr.eni.backend.bo.Role;
 import lombok.*;
 
 import java.time.LocalDate;
