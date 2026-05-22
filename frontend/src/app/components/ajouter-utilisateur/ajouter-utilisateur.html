@@ -2,5 +2,5 @@
   <div class="modifier-content-header">
     <h1>Ajouter un utilisateur</h1>
   </div>
-  <app-utilisateur-form (newUser)="onNewUser($event)" [errorMsg]="errorMsg"></app-utilisateur-form>
+  <app-utilisateur-form (newUser)="onNewUser($event)" [errorMsg]="errorMsg" [createdUser]="createdUser()"></app-utilisateur-form>
 </div>

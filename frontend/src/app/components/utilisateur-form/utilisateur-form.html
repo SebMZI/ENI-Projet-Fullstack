@@ -43,6 +43,13 @@
         }
 <!--         TODO AJOUTER ERREUR HANDLING-->
       </div>
+      <div class="msgs">
+        @if(createdUser && createdUser.motDePasse) {
+          <p>Mot de passe temporaire: {{createdUser.motDePasse}}</p>
+        }
+      </div>
+
+
     </div>
 
     <div class="form-col">

@@ -12,7 +12,8 @@ import { Utilisateurs } from '../utilisateurs/utilisateurs';
 })
 export class UtilisateurForm {
   @Input() errorMsg: string | undefined;
-  public roles: string[] = ['Eleve', 'Formateur', 'Referente', 'Admin'];
+  @Input() createdUser: Utilisateur | undefined;
+  public roles: string[] = ['Eleve', 'Formateur', 'Referente', 'Administrateur'];
 
   public form: FormGroup = new FormGroup({
     nom: new FormControl('', Validators.required),

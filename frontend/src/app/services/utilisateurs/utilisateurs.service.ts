@@ -39,8 +39,8 @@ export class UtilisateursService {
     });
   }
 
-  public addUser(user: Utilisateur) {
-    return this.http.post(`${environment.apiUrl}/utilisateurs`, user, {
+  public addUser(user: Utilisateur): Observable<Utilisateur> {
+    return this.http.post<Utilisateur>(`${environment.apiUrl}/utilisateurs`, user, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${this.auth.getTokenInStorage()}`,
