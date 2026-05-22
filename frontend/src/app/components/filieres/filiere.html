@@ -1,0 +1,59 @@
+<app-navbar-referent></app-navbar-referent>
+
+<div class="page">
+  <div class="page-header">
+    <h1>Filières</h1>
+    <button class="btn-primary" (click)="ouvrirModal()">Ajouter</button>
+  </div>
+
+  @if (erreur()) {
+    <p class="erreur">{{ erreur() }}</p>
+  }
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (f of filieres(); track f.id) {
+        <tr>
+          <td>
+            <a [routerLink]="['/cursus']" [queryParams]="{filiereId: f.id}" class="lien-filiere">
+              {{ f.nom }}
+            </a>
+          </td>
+          <td class="actions-cell">
+            <button class="btn-modifier" (click)="ouvrirModal(f)">Modifier</button>
+            <button class="btn-supprimer" (click)="supprimer(f.id)">Supprimer</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal -->
+@if (showModal()) {
+  <div class="overlay" (click)="fermerModal()"></div>
+  <div class="modal">
+    <h3>{{ modeEdition() ? 'Modifier' : 'Ajouter' }} une filière</h3>
+    <div class="field">
+      <label>Nom de la filière</label>
+      <input
+        type="text"
+        [value]="nomFiliere()"
+        (input)="nomFiliere.set($any($event.target).value)"
+        placeholder="Ex: Développement"
+      />
+    </div>
+    <div class="modal-actions">
+      <button class="btn-annuler" (click)="fermerModal()">Annuler</button>
+      <button class="btn-primary" (click)="sauvegarder()">
+        {{ modeEdition() ? 'Modifier' : 'Ajouter' }}
+      </button>
+    </div>
+  </div>
+}

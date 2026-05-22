@@ -15,4 +15,7 @@ public class CoursRequestDTO {
 
     @NotNull(message = "Le cursus est obligatoire")
     private Integer idCursus;
+
+    @NotNull(message = "L'ordre est obligatoire")
+    private Integer ordre;
 }

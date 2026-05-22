@@ -33,6 +33,7 @@ public class CoursPlanifieService {
                 .idFormateur(cp.getFormateur() != null ? cp.getFormateur().getImmatriculation() : null)  // ← changé
                 .nomFormateur(cp.getFormateur() != null ? cp.getFormateur().getNom() + " " + cp.getFormateur().getPrenom() : null)
                 .idPromotion(cp.getPromotion() != null ? cp.getPromotion().getId() : null)
+                .ordre(cp.getOrdre())
                 .build();
     }
 
@@ -83,6 +84,7 @@ public class CoursPlanifieService {
                 .dateFin(request.getDateFin())
                 .formateur(formateur)
                 .promotion(promotion)  // ← Lien avec la promotion
+                .ordre(cours.getOrdre())
                 .build();
 
         CoursPlanifie saved = coursPlanifieRepository.save(cp);

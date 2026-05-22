@@ -1,0 +1,74 @@
+<app-navbar-referent></app-navbar-referent>
+
+<div class="page">
+  <div class="page-header">
+    <h1>Promotions</h1>
+    <button class="btn-primary" (click)="ouvrirModal()">Ajouter</button>
+  </div>
+
+  @if (erreur()) {
+    <p class="erreur">{{ erreur() }}</p>
+  }
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Cursus</th>
+        <th>Début</th>
+        <th>Fin</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (p of promotions(); track p.id) {
+        <tr>
+          <td class="nom-cell">
+          <a [routerLink]="['/promotions', p.id, 'cours-planifies']" class="lien-promotion" title="Planifier les cours pour cette promotion">
+            📅 {{ p.nom }}
+          </a>
+        </td>
+          <td>{{ getNomCursus(p.idCursus) }}</td>
+          <td>{{ p.dateDebut }}</td>
+          <td>{{ p.dateFin }}</td>
+          <td class="actions-cell">
+            <button class="btn-modifier" (click)="ouvrirModal(p)">Modifier</button>
+            <button class="btn-supprimer" (click)="supprimer(p.id)">Supprimer</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+@if (showModal()) {
+  <div class="overlay" (click)="fermerModal()"></div>
+  <div class="modal">
+    <h3>{{ modeEdition() ? 'Modifier' : 'Ajouter' }} une promotion</h3>
+    <div class="field">
+      <label>Nom</label>
+      <input type="text" [value]="nom()" (input)="nom.set($any($event.target).value)" placeholder="Ex: CDA Sept 2026" />
+    </div>
+    <div class="field">
+      <label>Date de début</label>
+      <input type="date" [value]="dateDebut()" (input)="dateDebut.set($any($event.target).value)" />
+    </div>
+    <div class="field">
+      <label>Date de fin</label>
+      <input type="date" [value]="dateFin()" (input)="dateFin.set($any($event.target).value)" />
+    </div>
+    <div class="field">
+      <label>Cursus</label>
+      <select [(ngModel)]="selectedIdCursus">
+        <option [ngValue]="null">-- Choisir --</option>
+        @for (c of cursusList(); track c.id) {
+          <option [ngValue]="c.id">{{ c.intitule }}</option>
+        }
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-annuler" (click)="fermerModal()">Annuler</button>
+      <button class="btn-primary" (click)="sauvegarder()">Valider</button>
+    </div>
+  </div>
+}

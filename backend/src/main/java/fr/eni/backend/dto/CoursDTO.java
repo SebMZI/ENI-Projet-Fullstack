@@ -10,5 +10,6 @@ public class CoursDTO {
     private Integer id;
     private String titre;
     private Integer duree;
+    private Integer ordre;
     private Integer idCursus;
 }

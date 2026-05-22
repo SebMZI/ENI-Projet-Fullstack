@@ -1,0 +1,100 @@
+<app-navbar-referent></app-navbar-referent>
+
+<div class="page">
+  <div class="page-header">
+    <h1>📅 Planification — {{ promotion() ? promotion()!.nom : 'Promotion #' + promotionId }}</h1>
+  </div>
+
+  <br>
+
+  @if (lignes().length) {
+    <div class="stats">
+      @if (nbAPlanifier === 0) {
+        <div class="stat-message stat-success">
+          Tous les cours de cette promotion sont planifiés.
+        </div>
+      } @else if (nbPlanifies === 0) {
+        <div class="stat-message stat-warn">
+          Aucun cours n'est encore planifié. {{ nbAPlanifier }} cours en attente.
+        </div>
+      } @else {
+        <div class="stat-message stat-info">
+          {{ nbAPlanifier }}  cours non encore planifiés dans cette promotion.
+        </div>
+      }
+    </div>
+  }
+
+  <br>
+  
+  @if (erreur()) { <p class="erreur">{{ erreur() }}</p> }
+  @if (message()) { <p class="message">{{ message() }}</p> }
+
+  <table>
+    <thead>
+      <tr>
+        <th>Cours</th>
+        <th>Durée</th>
+        <th>Date début</th>
+        <th>Date fin</th>
+        <th>Formateur</th>
+        <th>Statut</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      @for (ligne of lignes(); track ligne.cours.id) {
+        <tr>
+          <td>{{ ligne.cours.titre }}</td>
+          <td>{{ ligne.cours.duree }}h</td>
+          <td>{{ ligne.dateDebut || '—' }}</td>
+          <td>{{ ligne.dateFin || '—' }}</td>
+          <td>{{ getNomFormateur(ligne.idFormateur) }}</td>
+          <td>
+            @if (ligne.existant) {
+              <span class="badge badge-ok">✅ Planifié</span>
+            } @else {
+              <span class="badge badge-warn">⏳ En attente</span>
+            }
+          </td>
+          <td>
+            <button class="btn-modifier" (click)="ouvrirModal(ligne)">
+              {{ ligne.existant ? '✏️ Modifier' : '➕ Planifier' }}
+            </button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+
+
+@if (showModal()) {
+  <div class="overlay" (click)="fermerModal()"></div>
+  <div class="modal">
+    <h3>{{ ligneEnEdition?.cours?.titre }}</h3>
+    <div class="field">
+      <label>Date de début</label>
+      <input type="date" [value]="editDateDebut()" (input)="editDateDebut.set($any($event.target).value)" />
+    </div>
+    <div class="field">
+      <label>Date de fin</label>
+      <input type="date" [value]="editDateFin()" (input)="editDateFin.set($any($event.target).value)" />
+    </div>
+    <div class="field">
+      <label>Formateur</label>
+      <select [(ngModel)]="editIdFormateur">
+        <option [ngValue]="null">-- Aucun --</option>
+        @for (f of formateurs(); track f.immatriculation) {
+          <option [ngValue]="f.immatriculation">{{ f.prenom }} {{ f.nom }}</option>
+        }
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-annuler" (click)="fermerModal()">Annuler</button>
+      <button class="btn-primary" (click)="sauvegarderModal()">Enregistrer</button>
+    </div>
+  </div>
+}

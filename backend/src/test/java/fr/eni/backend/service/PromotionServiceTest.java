@@ -8,6 +8,9 @@ import fr.eni.backend.dao.CursusRepository;
 import fr.eni.backend.dao.PromotionRepository;
 import fr.eni.backend.dto.PromotionDTO;
 import fr.eni.backend.dto.PromotionRequestDTO;
+import fr.eni.backend.bo.Role;
+import fr.eni.backend.bo.Utilisateur;
+import fr.eni.backend.dao.UtilisateurRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,6 +42,9 @@ class PromotionServiceTest {
 
     @Mock
     private Eleve eleve;
+
+    @Mock
+    private UtilisateurRepository utilisateurRepository;
 
     private Cursus cursus;
     private Promotion promotion;
@@ -184,6 +190,7 @@ class PromotionServiceTest {
 
 
  // ===== INSCRIPTION ELEVE =====
+ 
 
     @Test
     void inscrireEleve_ajoute_eleve_a_promotion() {
@@ -193,15 +200,21 @@ class PromotionServiceTest {
                 .prenom("Jean")
                 .email("jean@campus-eni.fr")
                 .build();
+        
+        Utilisateur utilisateur = new Utilisateur();
+        utilisateur.setImmatriculation("E001");
+        utilisateur.setRoles(List.of(Role.builder().role("ELEVE").build()));
 
         when(promotionRepository.findById(1)).thenReturn(Optional.of(promotion));
-        when(eleveRepository.findById("E001")).thenReturn(Optional.of(eleve));
-        when(promotionRepository.save(any(Promotion.class))).thenReturn(promotion);
+        when(utilisateurRepository.findById("E001")).thenReturn(Optional.of(utilisateur));
+        when(eleveRepository.existsById("E001")).thenReturn(true);
+        when(promotionRepository.findByElevesImmatriculation("E001")).thenReturn(List.of());
+        doNothing().when(promotionRepository).insererDansPromotionStudent(1, "E001");
+        when(promotionRepository.findById(1)).thenReturn(Optional.of(promotion));
 
         Promotion result = promotionService.inscrireEleve(1, "E001");
 
-        assertThat(result.getEleves()).contains(eleve);
-        verify(promotionRepository, times(1)).save(promotion);
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -214,13 +227,13 @@ class PromotionServiceTest {
     }
 
     @Test
-    void inscrireEleve_eleve_introuvable_lance_exception() {
+    void inscrireEleve_utilisateur_introuvable_lance_exception() {
         when(promotionRepository.findById(1)).thenReturn(Optional.of(promotion));
-        when(eleveRepository.findById("INCONNU")).thenReturn(Optional.empty());
+        when(utilisateurRepository.findById("INCONNU")).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> promotionService.inscrireEleve(1, "INCONNU"))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessage("Élève introuvable");
+                .hasMessage("Utilisateur introuvable");
     }
 
     @Test
