@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import {AuthenticationService} from '../../services/authentication/authentication.service';
-import { Authenticate } from '../../dto/authenticate';
+import { AuthRequest } from '../../interfaces/authRequest';
 import { lastValueFrom } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Utilisateur } from '../../interfaces/utilisateur';
@@ -37,7 +37,7 @@ export class Authentication {
     }
     try {
       const response: AuthResponse = await lastValueFrom(
-        this.authService.authenticate(<Authenticate> this.authForm.value),
+        this.authService.authenticate(<AuthRequest> this.authForm.value),
       );
 
       console.log('Auth', response);

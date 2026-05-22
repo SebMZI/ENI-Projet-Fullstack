@@ -1,0 +1,103 @@
+<form [formGroup]="form" (ngSubmit)="setNewUser()">
+  <div class="form-content">
+    <div class="form-col">
+      <div class="field">
+        <label for="nom">Nom</label>
+        <input type="text" id="nom" formControlName="nom"  required>
+      </div>
+
+      <div class="field">
+        <label for="prenom">Prénom</label>
+        <input type="text" id="prenom" formControlName="prenom"  required>
+      </div>
+
+      <div class="field">
+        <label for="phone">Téléphone</label>
+        <input type="text" id="phone" formControlName="telephone"  (input)="onlyPhoneNumbers($event)">
+      </div>
+
+      <div formGroupName="adresse">
+        <div class="field">
+          <label for="rue">Rue</label>
+          <input type="text" id="rue" formControlName="rue" >
+        </div>
+
+        <div class="form-cpo-ville">
+          <div class="field">
+            <label for="cpo">Code Postal</label>
+            <input type="text" id="cpo" formControlName="codePostal"  inputmode="numeric" pattern="[0-9]*" (input)="onlyNumbers($event)">
+          </div>
+
+          <div class="field">
+            <label for="ville">Ville</label>
+            <input type="text" id="ville" formControlName="ville" >
+          </div>
+        </div>
+      </div>
+
+      <div>
+        @if(isAdd()) {
+          <button type="submit" class="btn-primary">Ajouter</button>
+        } @else {
+          <button type="submit" class="btn-modifier">Modifier</button>
+        }
+<!--         TODO AJOUTER ERREUR HANDLING-->
+      </div>
+    </div>
+
+    <div class="form-col">
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" formControlName="email" >
+      </div>
+
+      <app-custom-multiple-select
+        [label]="'Roles'"
+        [items]="getRoles()"
+        (selectedItemChange)="selectedRole($event)">
+      </app-custom-multiple-select>
+
+      @if(rolesSignal().length) {
+        <div class="roles">
+          @for(role of rolesSignal(); track $index) {
+            <div class="role">
+              {{role}} <span class="cross" (click)="removeRole(role)">X</span>
+            </div>
+          }
+        </div>
+      }
+
+      @if(hasUserRole('ROLE_ELEVE')) {
+        <div class="field">
+          <label for="email_perso">Email Personnel</label>
+          <input type="email" id="email_perso" formControlName="emailPersonnel" >
+        </div>
+      }
+
+      @if(hasUserRole('ROLE_REFERENT') || hasUserRole('ROLE_REFERENTE')) {
+        <div class="field">
+          <label for="bureau">Bureau</label>
+          <input type="text" id="bureau" formControlName="bureau" >
+        </div>
+      }
+
+      @if(hasUserRole('ROLE_FORMATEUR')) {
+        <div class="field">
+          <label for="statut">Statut</label>
+          <select id="statut" formControlName="statut" >
+            <option value="" selected disabled>Sélectionner un statut</option>
+            <option value="interne">Interne</option>
+            <option value="externe">Externe</option>
+          </select>
+        </div>
+      }
+
+      @if(hasUserRole('ROLE_ADMIN')) {
+        <div class="field">
+          <label for="service">Service</label>
+          <input type="text" id="service" formControlName="service" >
+        </div>
+      }
+    </div>
+  </div>
+</form>

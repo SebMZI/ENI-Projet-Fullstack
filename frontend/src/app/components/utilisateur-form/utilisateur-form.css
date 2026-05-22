@@ -1,0 +1,75 @@
+form {
+  width: 100%;
+}
+
+.form-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.form-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  width: 100%;
+  max-width: 320px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 8px 12px;
+}
+
+.form-cpo-ville {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.form-cpo-ville .field:nth-child(1) {
+  flex: 0 0 35%;
+}
+
+.form-cpo-ville .field:nth-child(2) {
+  flex: 1;
+}
+
+.roles {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.roles .role {
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 10px;
+}
+
+.roles .role .cross {
+  margin-left: 4px;
+  color: red;
+  cursor: pointer;
+}
+
+.btn-modifier
+{ background: #f0f0f0; border: 1px solid #ccc; padding: 4px 10px; border-radius: 4px; cursor: pointer; margin-right: 6px; width: fit-content; }
+
+.btn-primary
+{ background: dodgerblue; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; width: fit-content; }
