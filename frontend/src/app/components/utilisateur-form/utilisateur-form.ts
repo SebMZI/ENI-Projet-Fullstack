@@ -96,6 +96,7 @@ export class UtilisateurForm {
       });
 
       console.log('Form errors:', this.form.errors);
+      this.form.markAllAsTouched();
       return;
     }
 
