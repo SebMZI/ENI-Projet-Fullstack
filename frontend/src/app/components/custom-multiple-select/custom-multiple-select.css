@@ -1,0 +1,46 @@
+.custom-select {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  margin: 0;
+}
+
+.drop-container {
+  position: relative;
+}
+
+.content{
+  border: 1px solid #8f8f9d;
+  cursor: pointer;
+}
+.content:active {
+  border: 2px solid #0078d4;
+}
+
+ .content,
+.dropdown-menu .item {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 8px 12px;
+}
+.dropdown-menu {
+  z-index: 10;
+  border: 1px solid #8f8f9d;
+  position: absolute;
+  background: #fff;
+}
+
+.dropdown-menu .item {
+  cursor: pointer;
+  display: inline-block;
+}
+
+.dropdown-menu .item:hover {
+  background: whitesmoke;
+}
+
+

@@ -1,0 +1,13 @@
+<div class="custom-select">
+  <p class="label">{{getLabel()}}</p>
+  <div class="drop-container">
+    <div class="content" (click)="toggleDropdown()">Selectionnez un rôle</div>
+    @if(dropdownoepn) {
+      <div class="dropdown-menu"  (click)="toggleDropdown()">
+        @for(item of getItems(); track $index) {
+          <span class="item" (click)="selectItem(item)">{{item}}</span>
+        }
+      </div>
+    }
+  </div>
+</div>

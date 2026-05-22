@@ -1,0 +1,211 @@
+<form [formGroup]="form" (ngSubmit)="setNewUser()">
+  <div class="form-content">
+    <div class="form-col">
+      <div class="field">
+        <label for="nom">Nom</label>
+        <input type="text" id="nom" formControlName="nom"  required>
+      </div>
+
+      <div class="field">
+        <label for="prenom">Prénom</label>
+        <input type="text" id="prenom" formControlName="prenom"  required>
+      </div>
+
+      <div class="field">
+        <label for="phone">Téléphone</label>
+        <input type="text" id="phone" formControlName="telephone"  (input)="onlyPhoneNumbers($event)">
+      </div>
+
+      <div formGroupName="adresse">
+        <div class="field">
+          <label for="rue">Rue</label>
+          <input type="text" id="rue" formControlName="rue" >
+        </div>
+
+        <div class="form-cpo-ville">
+          <div class="field">
+            <label for="cpo">Code Postal</label>
+            <input type="text" id="cpo" formControlName="codePostal"  inputmode="numeric" pattern="[0-9]*" (input)="onlyNumbers($event)">
+          </div>
+
+          <div class="field">
+            <label for="ville">Ville</label>
+            <input type="text" id="ville" formControlName="ville" >
+          </div>
+        </div>
+      </div>
+
+      <div>
+        @if(isAdd()) {
+          <button type="submit" class="btn-primary">Ajouter</button>
+        } @else {
+          <button type="submit" class="btn-modifier">Modifier</button>
+        }
+<!--         TODO AJOUTER ERREUR HANDLING-->
+
+      </div>
+      <div class="msgs">
+
+        @if(createdUser && createdUser.motDePasse) {
+          <p>Mot de passe temporaire: {{createdUser.motDePasse}}</p>
+        }
+
+        @if(form.invalid && (form.touched || form.dirty)) {
+          <div>
+            <p>Le formulaire contient des erreurs</p>
+          </div>
+        }
+
+        @if(form.get('nom')?.touched && form.get('nom')?.errors) {
+          <div>
+            @if(form.get('nom')?.errors?.['required']) {
+              <p>Nom obligatoire</p>
+            }
+          </div>
+        }
+
+        @if(form.get('prenom')?.touched && form.get('prenom')?.errors) {
+          <div>
+            @if(form.get('prenom')?.errors?.['required']) {
+              <p>Prénom obligatoire</p>
+            }
+          </div>
+        }
+
+        @if(form.get('email')?.touched && form.get('email')?.errors) {
+          <div>
+            @if(form.get('email')?.errors?.['required']) {
+              <p>Email obligatoire</p>
+            }
+
+            @if(form.get('email')?.errors?.['email']) {
+              <p>Email invalide</p>
+            }
+
+            @if(form.get('email')?.errors?.['pattern']) {
+              <p>Email doit être @campus-eni.fr</p>
+            }
+          </div>
+        }
+
+        @if(form.get('telephone')?.touched && form.get('telephone')?.errors) {
+          <div>
+            @if(form.get('telephone')?.errors?.['pattern']) {
+              <p>Le téléphone doit contenir exactement 10 chiffres</p>
+            }
+          </div>
+        }
+
+        @if(form.get('adresse.rue')?.touched && form.get('adresse.rue')?.errors) {
+          <div>
+            @if(form.get('adresse.rue')?.errors?.['required']) {
+              <p>Rue obligatoire</p>
+            }
+          </div>
+        }
+
+        @if(form.get('adresse.codePostal')?.touched && form.get('adresse.codePostal')?.errors) {
+          <div>
+            @if(form.get('adresse.codePostal')?.errors?.['required']) {
+              <p>Code postal obligatoire</p>
+            }
+
+            @if(form.get('adresse.codePostal')?.errors?.['pattern']) {
+              <p>Code postal invalide (5 chiffres)</p>
+            }
+          </div>
+        }
+        @if(form.get('adresse.ville')?.touched && form.get('adresse.ville')?.errors) {
+          <div>
+            @if(form.get('adresse.ville')?.errors?.['required']) {
+              <p>Ville obligatoire</p>
+            }
+          </div>
+        }
+        @if(form.get('emailPersonnel')?.touched && form.get('emailPersonnel')?.errors) {
+          <div>
+            @if(form.get('emailPersonnel')?.errors?.['email']) {
+              <p>Email personnel invalide</p>
+            }
+          </div>
+        }
+        @if(form.get('bureau')?.touched && form.get('bureau')?.errors) {
+          <div>
+            @if(form.get('bureau')?.errors?.['required']) {
+              <p>Bureau obligatoire</p>
+            }
+          </div>
+        }
+        @if(form.get('statut')?.touched && form.get('statut')?.errors) {
+          <div>
+            <p>Statut obligatoire</p>
+          </div>
+        }
+        @if(form.get('service')?.touched && form.get('service')?.errors) {
+          <div>
+            @if(form.get('service')?.errors?.['required']) {
+              <p>Service obligatoire</p>
+            }
+          </div>
+        }
+      </div>
+
+
+    </div>
+
+    <div class="form-col">
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" formControlName="email" >
+      </div>
+
+      <app-custom-multiple-select
+        [label]="'Roles'"
+        [items]="getRoles()"
+        (selectedItemChange)="selectedRole($event)">
+      </app-custom-multiple-select>
+
+      @if(rolesSignal().length) {
+        <div class="roles">
+          @for(role of rolesSignal(); track $index) {
+            <div class="role">
+              {{role}} <span class="cross" (click)="removeRole(role)">X</span>
+            </div>
+          }
+        </div>
+      }
+
+      @if(hasUserRole('ROLE_ELEVE')) {
+        <div class="field">
+          <label for="email_perso">Email Personnel</label>
+          <input type="email" id="email_perso" formControlName="emailPersonnel" >
+        </div>
+      }
+
+      @if(hasUserRole('ROLE_REFERENT') || hasUserRole('ROLE_REFERENTE')) {
+        <div class="field">
+          <label for="bureau">Bureau</label>
+          <input type="text" id="bureau" formControlName="bureau" >
+        </div>
+      }
+
+      @if(hasUserRole('ROLE_FORMATEUR')) {
+        <div class="field">
+          <label for="statut">Statut</label>
+          <select id="statut" formControlName="statut" >
+            <option value="" selected disabled>Sélectionner un statut</option>
+            <option value="interne">Interne</option>
+            <option value="externe">Externe</option>
+          </select>
+        </div>
+      }
+
+      @if(hasUserRole('ROLE_ADMIN')) {
+        <div class="field">
+          <label for="service">Service</label>
+          <input type="text" id="service" formControlName="service" >
+        </div>
+      }
+    </div>
+  </div>
+</form>

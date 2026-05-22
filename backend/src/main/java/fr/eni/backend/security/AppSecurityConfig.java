@@ -30,7 +30,8 @@ public class AppSecurityConfig {
                            "/v3/api-docs/**",
                            "/swagger-ui/**",
                            "/swagger-ui.html"
-                   ).permitAll();
+                   ).permitAll()
+                   .anyRequest().permitAll();
 
         });
 

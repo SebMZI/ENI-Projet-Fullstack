@@ -46,7 +46,7 @@ public class TestAuth {
 
 
         Role roleReferent = Role.builder()
-                .role("ROLE_REFERENT")
+                .role("ROLE_REFERENTE")
                 .build();
 
         roleRepository.saveAndFlush(roleReferent);

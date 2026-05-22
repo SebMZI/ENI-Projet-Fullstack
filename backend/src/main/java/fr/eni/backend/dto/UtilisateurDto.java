@@ -3,7 +3,6 @@ package fr.eni.backend.dto;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -15,7 +14,7 @@ public class UtilisateurDTO {
     private String prenom;
     private String email;
     private String telephone;
-    private String role;
+    private String[] roles;
     private LocalDate dateCreation;
 
     // Spécifiques (null si non concerné)
